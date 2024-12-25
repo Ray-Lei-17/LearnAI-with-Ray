@@ -43,6 +43,9 @@ I hope this repository can serve as both my personal learning journal and an ope
 ├── Domain/              # Information about Difference Domain
 │   └── RAG.md
 │
+├── Tool/              # Tool used in the process
+│   └── git.md
+│
 └── README.md
 ```
 
