@@ -1,0 +1,14 @@
+site_name: LearnAI-with-Ray
+theme:
+  name: material
+markdown_extensions:
+  - obsidian_media_mkdocs
+  - pymdownx.highlight:
+      anchor_linenums: true
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+  - pymdownx.superfences
+plugins:
+  - search
+  - awesome-pages
+  - obsidian-bridge

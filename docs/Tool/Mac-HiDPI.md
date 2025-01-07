@@ -5,7 +5,8 @@ Mac默认对4K显示器有HiDPI支持，但是对2K显示器没有相关支持�
 ```shell
 bash -c "$(curl -fsSL https://raw.githubusercontent.com/xzhih/one-key-hidpi/master/hidpi.sh)"
 ```
-![[../Images/Pasted image 20250107173405.png]]
+![[Pasted image 20250107173405.png]]
 
 开启完之后，分辨率后面会显示HiDPI，这时选择相应分辨率，实际分辨率不会下降，只起到缩放效果。
-![[../Images/Pasted image 20250107173009.png]]
+
+![[Pasted image 20250107173009.png]]
