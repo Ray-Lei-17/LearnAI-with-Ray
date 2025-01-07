@@ -13,3 +13,20 @@ plugins:
 markdown_extensions:
   - obsidian_media_mkdocs  # this thing embeds audio/video/YouTube
 ```
+
+## debug记录
+
+1. 使用github action部署报错
+```
+INFO - Copying '/home/runner/work/LearnAI-with-Ray/LearnAI-with-Ray/site' to 'gh-pages' branch and pushing to GitHub.  
+remote: Permission to Ray-Lei-17/LearnAI-with-Ray.git denied to github-actions[bot].  
+fatal: unable to access '[https://github.com/Ray-Lei-17/LearnAI-with-Ray/](https://github.com/Ray-Lei-17/LearnAI-with-Ray/)': The requested URL returned error: 403
+```
+- Go to your repository on GitHub.
+- Navigate to **Settings** > **Actions** > **General**.
+- Scroll down to the **Workflow permissions** section.
+- Select **Read and write permissions**.
+- Click **Save**.
+2. 本地部署运行的很好，但是线上就是访问的模版不对，子目录也访问不到
+
+- 忘记加上site url，发布的branch错了
