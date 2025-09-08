@@ -1,4 +1,4 @@
-# Tunnel
+# VS Code Tunnel
 由于使用学校的VPN经常出现非常不稳定的情况，从同学那里知道可以使用vscode的tunnel，记录一下我的使用历程
 [中文官方教程](https://vscode.github.net.cn/docs/remote/tunnels)
 [英文官方教程](https://code.visualstudio.com/docs/remote/tunnels)
