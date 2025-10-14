@@ -22,6 +22,13 @@
 | 折扣因子（Discount, $\gamma$)     | 衡量未来奖励的重要性    | 通常 < 1，用来让长期奖励不会无限叠加   |
 
 
+
+
+
+---
+
+
+
 ## 强化学习的目标：最大化总奖励
 ![[Pasted image 20251013112709.png]]
 在这个公式中的折扣因子不会影响最优策略，但是使用折扣因子会让训练变得更加稳定。
@@ -104,8 +111,11 @@ REINFORCE针对这个累计奖励的概率直接计算梯度进行更新
 ![[Pasted image 20251014115142.png]]
 ![[Pasted image 20251014115216.png]]
 ![[Pasted image 20251014115302.png]]
+
+
 # RL for LLM
 现在对于RL中的PPO算法有了一定的了解，那它又是如何用来训练大语言模型的呢？
+
 ## PPO
 ![[Pasted image 20251014161206.png]]
 ![[Pasted image 20251014161313.png]]
@@ -205,6 +215,7 @@ for iteration in range(num_iterations):
 ![[Pasted image 20251014162059.png]]
 ![[Pasted image 20251014162114.png]]
 ![[Pasted image 20251014162132.png]]
+
 ## DPO
 简述：不再额外保留reward网络和价值网络，直接使用两两样本的对比来优化模型
 ![[Pasted image 20251014163043.png]]
@@ -212,6 +223,7 @@ for iteration in range(num_iterations):
 ![[Pasted image 20251014163148.png]]
 ![[Pasted image 20251014163242.png]]
 ![[Pasted image 20251014163256.png]]
+
 
 ## GRPO
 简述：**组内成员之间的两两比较**得出的**相对胜率**作为奖励信号
