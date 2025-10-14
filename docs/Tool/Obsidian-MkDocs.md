@@ -30,3 +30,6 @@ fatal: unable to access '[https://github.com/Ray-Lei-17/LearnAI-with-Ray/](https
 2. 本地部署运行的很好，但是线上就是访问的模版不对，子目录也访问不到
 
 - 忘记加上site url，发布的branch错了
+
+2. Table of Content不对，内容格式出错
+- 发现是因为mkdocs不能识别内容中的一级标题，把一级标题改成二级标题全部正常了
