@@ -23,3 +23,16 @@ tar -xf vscode_cli.tar.gz
 ./code tunnel service install
 ```
 执行完之后，就可以非常方便的进行连接了。
+查看tunnel的log
+```
+./code tunnel service log
+```
+我在手动开了服务之后发现还是连不上，重装之后连上了
+```
+./code tunnel service uninstall
+```
+感觉github还是很不稳定，尝试将账号迁移到microsoft
+```
+./code tunnel user logout
+```
+用上面的命令将用户登出
