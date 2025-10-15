@@ -27,9 +27,20 @@ fatal: unable to access '[https://github.com/Ray-Lei-17/LearnAI-with-Ray/](https
 - Scroll down to the **Workflow permissions** section.
 - Select **Read and write permissions**.
 - Click **Save**.
-2. 本地部署运行的很好，但是线上就是访问的模版不对，子目录也访问不到
 
+2. 本地部署运行的很好，但是线上就是访问的模版不对，子目录也访问不到
 - 忘记加上site url，发布的branch错了
 
-2. Table of Content不对，内容格式出错
+3. Table of Content不对，内容格式出错
 - 发现是因为mkdocs不能识别内容中的一级标题，把一级标题改成二级标题全部正常了
+
+2. 公式渲染异常
+- 参考这篇文章[mkdocs支持Latex风格的公式](https://seekstar.github.io/2024/03/21/mkdocs%E6%94%AF%E6%8C%81latex%E9%A3%8E%E6%A0%BC%E7%9A%84%E5%85%AC%E5%BC%8F/)
+- 添加以下内容
+```
+markdown_extensions:
+  - pymdownx.arithmatex
+
+extra_javascript:
+  - https://cdn.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-AMS-MML_HTMLorMML
+```
