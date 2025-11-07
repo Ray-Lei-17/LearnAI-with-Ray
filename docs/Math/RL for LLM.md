@@ -118,22 +118,69 @@ REINFORCE针对这个累计奖励的概率直接计算梯度进行更新
 
 ### PPO
 
-针对PPO而言，其关键点在于更新Actor的时候使用的函数进行了改进。
+针对`PPO`而言，其关键点在于更新`Actor`的时候使用的函数进行了改进。
 ![[Pasted image 20251013232026.png]]
 在PPO的公式中除了优势函数，又引入了一个新老策略的比值的概念，后面的clip就是对这个比值范围的限制，防止一次更新的步子过大。
 
-#### 新旧策略比值$r_t​(\theta)=\frac{\pi_{old​}(a_t,​s_t​)}{π_\pi​(a_t​,s_t​)}​$
+#### 重要性采样$r_t​(\theta)=\frac{\pi_{old​}(a_t,​s_t​)}{π_\pi​(a_t​,s_t​)}​$
+##### 原始解释
 
 ![[Pasted image 20251013233329.png]]
 ![[Pasted image 20251013233348.png]]
 ![[Pasted image 20251013233420.png]]
+##### 解释更新
+上面的解释当时给了我一种错觉，`PPO`是一种`off-policy`的策略，但实际上`PPO`是一个`on-policy`的方法，或者说近似`on-policy`，虽然会迭代采样比较新的方法，但是中间还是会有一些轮次是在最近采样的轨迹上更新的，并不代表完全最新的策略，所以还是存在策略重要性比值
+
+下面讲讲`off-policy`和`on-policy`的方法的区别
+###### `on-policy` v.s. `off-policy`
+![[Pasted image 20251107104933.png]]
+![[Pasted image 20251107104953.png]]
+![[Pasted image 20251107105020.png]]
+
+上面能看到`on-policy`和`off-policy`的主要区别就在于用的数据是新还是旧，然后同时我们还可以有一个发现，就是`off-policy`的方法多是`value-based`的，而`on-policy`的多是`policy-based`的，GPT老师是这么给我解释的
+
+![[Pasted image 20251107110438.png]]
+
+| 方法类型             | 核心目标                                  | 为什么倾向某种策略                                                                      |
+| ---------------- | ------------------------------------- | ------------------------------------------------------------------------------ |
+| **Value-based**  | 学习 $Q(s, a) = \mathbb{E}[R\|a,s]$的估计值 | 因为 Q-learning 通过自举（bootstrapping）更新，目标动作来自当前策略，但数据可以来自任何策略，所以天然支持 `off-policy` |
+| **Policy-based** | 直接学习策略 $\pi_\theta(a\|s)$             | 因为策略梯度的期望是基于当前策略分布计算的，必须用当前策略采样的数据，所以通常是 `on-policy`。                          |
+
+![[Pasted image 20251107110509.png]]
+
+| 算法                   | 类型           | On/Off Policy       | 说明                                |
+| -------------------- | ------------ | ------------------- | --------------------------------- |
+| **Q-learning / DQN** | Value-based  | ✅ Off-policy        | 因为可以用经验回放                         |
+| **SARSA**            | Value-based  | ✅ On-policy         | 因为更新目标用的是当前策略的动作                  |
+| **REINFORCE**        | Policy-based | ✅ On-policy         | 需要当前策略轨迹来估计梯度                     |
+| **A2C / A3C**        | Actor-Critic | ✅ On-policy         | 策略梯度部分需要当前数据                      |
+| **DDPG / TD3 / SAC** | Actor-Critic | ✅ Off-policy        | 用 replay buffer，融合 value-based 思想 |
+| **PPO / TRPO**       | Policy-based | ✅ On-policy（约束更新步长） | 限制策略变化太大时的 instability            |
+![[Pasted image 20251107110521.png]]
+
+###### 核心公式
+![[Pasted image 20251107110656.png]]
+![[Pasted image 20251107110709.png]]
+
+#### 轮次的概念
+
+由于PPO是近似`on-policy`，让我对轮次的概念产生了疑惑，GPT老师的表述中每一轮PPO会重新采样一次数据
+![[Pasted image 20251107111911.png]]
+![[Pasted image 20251107111925.png]]
+![[Pasted image 20251107111952.png]]
+
+#### 整理
+
 整体的思想我们已经了解，我们再把上面的内容按照执行的步骤进行一些重新的整理：
 ![[Pasted image 20251014115111.png]]
 ![[Pasted image 20251014115142.png]]
 ![[Pasted image 20251014115216.png]]
 ![[Pasted image 20251014115302.png]]
 
-
+##### REINFORCE → Actor-Critic → Importance sampling → PPO
+![[Pasted image 20251107111052.png]]
+![[Pasted image 20251107111115.png]]
+![[Pasted image 20251107111147.png]]
 # RL for LLM
 
 现在对于RL中的PPO算法有了一定的了解，那它又是如何用来训练大语言模型的呢？
@@ -241,7 +288,13 @@ for iteration in range(num_iterations):
 
 ## DPO
 
+参考资料：[# 详细推导DPO算法](https://zhuanlan.zhihu.com/p/697757566)
+本站简单拆解：[[DPO]]
+
 简述：不再额外保留reward网络和价值网络，直接使用两两样本的对比来优化模型
+
+
+总体思路：利用Bradley-Terry建模关系，利用优化目标， 解出最优reward的闭式解，带入回Bradley-Terry公式中，得到loss的形式
 ![[Pasted image 20251014163043.png]]
 ![[Pasted image 20251014163103.png]]
 ![[Pasted image 20251014163148.png]]
@@ -267,3 +320,49 @@ for iteration in range(num_iterations):
 ![[Pasted image 20251014162650.png]]
 ![[Pasted image 20251014162702.png]]
 ![[Pasted image 20251014162716.png]]
+
+### leave-one-out strategy
+`leave-one-out strategy`是指在计算优势函数的时候，把自己这个样本摘出去，这样是为了减少计算时的方差，GPT老师解释如下
+
+![[Pasted image 20251107112340.png]]
+![[Pasted image 20251107112431.png]]
+![[Pasted image 20251107112441.png]]
+
+## DAPO
+简述：把全对或者全错的样本删掉，因为梯度为0，根本不需要做计算更新
+
+![[Pasted image 20251107112617.png]]![[Pasted image 20251107112638.png]]
+##### 公式
+![[Pasted image 20251107112719.png]]![[Pasted image 20251107112936.png]]
+###### 几个关键部分
+![[Pasted image 20251107113907.png]]![[Pasted image 20251107113931.png]]
+##### 相比GRPO的改进点
+![[Pasted image 20251107114112.png]]
+![[Pasted image 20251107114125.png]]
+
+### DUPO
+tongyi的web sailor里面提供的方法，简述而言是吧DAPO里面去掉的样本用同batch中其他的样本填充来加快速度
+###### 原文
+![[Pasted image 20251107114539.png]]
+###### GPT回答
+![[Pasted image 20251107114637.png]]
+![[Pasted image 20251107114654.png]]
+![[Pasted image 20251107114711.png]]
+![[Pasted image 20251107114747.png]]
+这个就是DAPO去除梯度为0的样本的公式
+![[Pasted image 20251107114802.png]]
+![[Pasted image 20251107114852.png]]
+## GSPO
+简述：把重要性采样给换成基于组的
+![[Pasted image 20251104213526.png]]
+### 回答
+![[Pasted image 20251107115333.png]]
+![[Pasted image 20251107115348.png]]
+### 序列级别
+![[Pasted image 20251107115943.png]]
+![[Pasted image 20251107115959.png]]
+![[Pasted image 20251107120024.png]]
+![[Pasted image 20251107120036.png]]
+
+# 总结对比
+![[Pasted image 20251107114942.png]]
