@@ -156,6 +156,7 @@ REINFORCE针对这个累计奖励的概率直接计算梯度进行更新
 | **A2C / A3C**        | Actor-Critic | ✅ On-policy         | 策略梯度部分需要当前数据                      |
 | **DDPG / TD3 / SAC** | Actor-Critic | ✅ Off-policy        | 用 replay buffer，融合 value-based 思想 |
 | **PPO / TRPO**       | Policy-based | ✅ On-policy（约束更新步长） | 限制策略变化太大时的 instability            |
+
 ![[Pasted image 20251107110521.png]]
 
 ###### 核心公式
