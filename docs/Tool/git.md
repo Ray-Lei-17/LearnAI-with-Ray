@@ -1,4 +1,4 @@
-# 如何通过不同账号提交git
+## 如何通过不同账号提交git
 
 如果有通过不同账号提交的需要，可以通过一下子的方式进行操作。主要思想是：通过改变git remote url的host，在ssh config中指定不同的IdentityFile去访问
 
@@ -41,3 +41,15 @@ git@github.com:github-user-A/your-repository.git
 git@github-user-A.com:github-user-A/your-repository.git
 ```
 然后在github不同的账号设置下添加对应的ssh key即可
+
+## 文件本地已删除，在git批量删除
+
+```
+git rm --cached $(git ls-files --deleted)
+```
+
+如果文件路径里有空格的话就用下面这个
+
+```
+git ls-files --deleted -z | xargs -0 git rm --cached
+```
