@@ -19,7 +19,7 @@ jobs:
         python-version: '3.12'
 
     - name: Install dependencies
-      run: pip install mkdocs mkdocs-material mkdocs-awesome-pages-plugin mkdocs-obsidian-bridge
+      run: pip install mkdocs mkdocs-material mkdocs-awesome-pages-plugin mkdocs-obsidian-bridge mkdocs-callouts
 
     - name: Deploy to GitHub Pages
       run: mkdocs gh-deploy --force
