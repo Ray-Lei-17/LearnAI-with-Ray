@@ -1,18 +1,27 @@
- obsidian中的图片路径是传统的markdown不一样，使用MkDocs部署的时候有显示问题，用了这个[mkdocs-obsidian-bridge插件](https://github.com/GooRoo/mkdocs-obsidian-bridge)完美解决，讨论可见[这里](https://github.com/GooRoo/mkdocs-obsidian-bridge/issues/17#issuecomment-2369535324)
- 
-```shell
-pip install mkdocs-obsidian-bridge
-```
+> [!info]+ obsidian图片路径问题
+> obsidian中的图片路径是传统的markdown不一样，使用MkDocs部署的时候有显示问题，用了这个[mkdocs-obsidian-bridge插件](https://github.com/GooRoo/mkdocs-obsidian-bridge)完美解决，讨论可见[这里](https://github.com/GooRoo/mkdocs-obsidian-bridge/issues/17#issuecomment-2369535324)
+> 
+> ```shell
+> pip install mkdocs-obsidian-bridge
+> ```
+> 
+> 在`mkdocs.yml`里面修改
+> 	```yaml
+> 	plugins:
+> 	   -obsidian-bridge
+> 	markdown_extensions:
+> 	  - obsidian_media_mkdocs  # this thing embeds audio/video/YouTube
+> 	```
 
-在`mkdocs.yml`里面修改
 
-```YAML
-plugins:
-  - obsidian-bridge
-
-markdown_extensions:
-  - obsidian_media_mkdocs  # this thing embeds audio/video/YouTube
-```
+> [!info] 标题
+> ```
+> plugins:
+>   - obsidian-bridge
+> 
+> markdown_extensions:
+>   - obsidian_media_mkdocs
+> ```
 
 ## debug记录
 
@@ -44,3 +53,15 @@ markdown_extensions:
 extra_javascript:
   - https://cdn.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-AMS-MML_HTMLorMML
 ```
+
+
+>[!info]+ 标题折叠
+
+
+>[!info]+ callout内代码行间距过大
+
+
+>[!info]+ callout图标库
+
+
+

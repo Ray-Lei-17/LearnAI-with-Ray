@@ -2,17 +2,25 @@ site_name: LearnAI-with-Ray
 theme:
   name: material
 markdown_extensions:
+  - admonition          # 基础提示框
+  - pymdownx.details    # 支持 ??? 折叠
   - obsidian_media_mkdocs
   - pymdownx.highlight:
-      anchor_linenums: true
+      anchor_linenums: false
+      # pygments_lang_class: false
+      # extend_pygments_lang: []
   - pymdownx.inlinehilite
   - pymdownx.snippets
-  - pymdownx.superfences
+  - pymdownx.superfences # 必须：允许在折叠框里放代码块、列表或嵌套内容
   - pymdownx.arithmatex
 extra_javascript:
   - https://cdn.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-AMS-MML_HTMLorMML
+  - assets/javascripts/collapse.js
+extra_css:
+  - assets/stylesheets/extra.css
 plugins:
   - search
   - awesome-pages
   - obsidian-bridge
+  - callouts
 site_url: https://ray-lei-17.github.io/LearnAI-with-Ray/

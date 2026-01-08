@@ -1,0 +1,27 @@
+/* 鼠标悬停在标题上时背景微亮 */
+.collapsible-header:hover {
+    background-color: rgba(0, 0, 0, 0.02);
+    border-radius: 4px;
+}
+
+/* 隐藏时平滑过渡的提示（可选）（目前使用起来感觉没用） */
+.collapse-icon {
+    color: var(--md-typeset-color);
+    opacity: 0.5;
+}
+
+/* 修复 Material + admonition 中 '-' 被当成 indicator 破坏布局的问题 */
+
+/* .md-typeset .admonition pre code span.p-Indicator,
+.md-typeset .admonition pre code span.p {
+  display: inline !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  width: auto !important;
+} */
+
+/* 确保所有代码块严格保留空白 */
+/* .md-typeset .admonition pre,
+.md-typeset .admonition code {
+  white-space: pre !important;
+} */
