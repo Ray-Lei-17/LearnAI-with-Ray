@@ -4,14 +4,12 @@ theme:
 markdown_extensions:
   - admonition          # 基础提示框
   - pymdownx.details    # 支持 ??? 折叠
+  - pymdownx.superfences # 必须：允许在折叠框里放代码块、列表或嵌套内容
   - obsidian_media_mkdocs
   - pymdownx.highlight:
       anchor_linenums: false
-      # pygments_lang_class: false
-      # extend_pygments_lang: []
   - pymdownx.inlinehilite
-  - pymdownx.snippets
-  - pymdownx.superfences # 必须：允许在折叠框里放代码块、列表或嵌套内容
+  # - pymdownx.snippets
   - pymdownx.arithmatex
 extra_javascript:
   - https://cdn.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-AMS-MML_HTMLorMML
@@ -19,8 +17,9 @@ extra_javascript:
 extra_css:
   - assets/stylesheets/extra.css
 plugins:
+  - obsidian-bridge
+  - callouts:
+      breakless_lists: false
   - search
   - awesome-pages
-  - obsidian-bridge
-  - callouts
 site_url: https://ray-lei-17.github.io/LearnAI-with-Ray/

@@ -4,24 +4,25 @@
     border-radius: 4px;
 }
 
+.collapsible-header.flash-target {
+    animation: header-flash 1.2s ease-out;
+    border-radius: 4px;
+}
+
+@keyframes header-flash {
+    0% {
+        background-color: rgba(255, 214, 0, 0.35);
+    }
+    60% {
+        background-color: rgba(255, 214, 0, 0.2);
+    }
+    100% {
+        background-color: transparent;
+    }
+}
+
 /* 隐藏时平滑过渡的提示（可选）（目前使用起来感觉没用） */
 .collapse-icon {
     color: var(--md-typeset-color);
     opacity: 0.5;
 }
-
-/* 修复 Material + admonition 中 '-' 被当成 indicator 破坏布局的问题 */
-
-/* .md-typeset .admonition pre code span.p-Indicator,
-.md-typeset .admonition pre code span.p {
-  display: inline !important;
-  margin: 0 !important;
-  padding: 0 !important;
-  width: auto !important;
-} */
-
-/* 确保所有代码块严格保留空白 */
-/* .md-typeset .admonition pre,
-.md-typeset .admonition code {
-  white-space: pre !important;
-} */
