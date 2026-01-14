@@ -182,6 +182,31 @@ REINFORCE针对这个累计奖励的概率直接计算梯度进行更新
 ![[Pasted image 20251107111052.png]]
 ![[Pasted image 20251107111115.png]]
 ![[Pasted image 20251107111147.png]]
+#### REINFORCE v.s. PPO
+先看看REINFORCE的公式
+
+![[Pasted image 20260114170717.png|400]]
+
+然后我们看看PPO的公式
+
+![[Pasted image 20260114171219.png|600]]
+
+可以看到在REINFORCE里面有一个log，而PPO中没有，于是我找gpt老师问了一下，很有收获，总的来说，log的出现是为了将期望
+![[Pasted image 20260114175106.png]]
+![[Pasted image 20260114175554.png]]
+![[Pasted image 20260114175713.png]]
+![[Pasted image 20260114175943.png]]
+![[Pasted image 20260114180021.png]]
+![[Pasted image 20260114180102.png]]
+![[Pasted image 20260114180121.png]]
+![[Pasted image 20260114180218.png]]
+![[Pasted image 20260114180238.png]]
+![[Pasted image 20260114180303.png]]
+![[Pasted image 20260114180340.png]]
+![[Pasted image 20260114180503.png]]
+![[Pasted image 20260114180531.png]]
+![[Pasted image 20260114180559.png]]
+![[Pasted image 20260114180625.png]]
 # RL for LLM
 
 现在对于RL中的PPO算法有了一定的了解，那它又是如何用来训练大语言模型的呢？
@@ -307,7 +332,15 @@ for iteration in range(num_iterations):
 
 简述：**组内成员之间的两两比较**得出的**相对胜率**作为奖励信号
 ![[Pasted image 20251014162818.png]]
-如果前面的内容都能看懂的话，结合后面部分，这个图应当是很容易看懂了，这个我们直接转问DeepSeek：
+如果前面的内容都能看懂的话，结合后面部分，这个图应当是很容易看懂了，我们先把两个公式晒出来
+![[Pasted image 20260114161233.png]]
+![[Pasted image 20260114161315.png]]
+![[Pasted image 20260114161354.png]]
+![[Pasted image 20260114161437.png]]
+![[Pasted image 20260114161739.png]]
+![[Pasted image 20260114161756.png]]
+![[Pasted image 20260114161813.png]]
+然后我们直接转问DeepSeek：
 ![[Pasted image 20251014162258.png]]
 ![[Pasted image 20251014162349.png]]
 ![[Pasted image 20251014162411.png]]

@@ -40,7 +40,10 @@ git@github.com:github-user-A/your-repository.git
 ```
 git@github-user-A.com:github-user-A/your-repository.git
 ```
-然后在github不同的账号设置下添加对应的ssh key即可
+然后在github不同的账号设置下添加对应的ssh key即可，可用如下命令
+```
+git remote set-url origin git@github-user-A.com:github-user-A/your-repository.git
+```
 
 ## 文件本地已删除，在git批量删除
 
