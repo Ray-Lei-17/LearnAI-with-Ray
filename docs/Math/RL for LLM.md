@@ -365,7 +365,8 @@ for iteration in range(num_iterations):
 ## DAPO
 简述：把全对或者全错的样本删掉，因为梯度为0，根本不需要做计算更新
 
-![[Pasted image 20251107112617.png]]![[Pasted image 20251107112638.png]]
+![[Pasted image 20251107112617.png]]
+![[Pasted image 20251107112638.png]]
 ##### 公式
 ![[Pasted image 20251107112719.png]]![[Pasted image 20251107112936.png]]
 ###### 几个关键部分

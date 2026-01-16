@@ -285,3 +285,8 @@
 >- question
 
 
+> [!success] Obsidian 关系图谱
+> 我会使用关系图谱看是否存在不必要的多余的图片，这个时候需要去除site文件夹对我的影响，所我会使用如下筛选条件
+> ```
+> path:docs (file:.md OR file:.png)
+> ```
