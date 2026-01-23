@@ -9,4 +9,4 @@ bash -c "$(curl -fsSL https://raw.githubusercontent.com/xzhih/one-key-hidpi/mast
 
 开启完之后，分辨率后面会显示HiDPI，这时选择相应分辨率，实际分辨率不会下降，只起到缩放效果。
 
-![[Pasted image 20250107173009.png]]
+![[Pasted image 20250107173009.png|300]]

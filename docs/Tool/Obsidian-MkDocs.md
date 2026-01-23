@@ -25,6 +25,17 @@
 > markdown_extensions:
 >   - obsidian_media_mkdocs  # this thing embeds audio/video/YouTube
 > ```
+>
+>图片路径之外还遇到图片尺寸的调整在 obsidian中显示正常，但是在mkdocs中却没有成功调整尺寸，最后发现是因为在尺寸前面有空格就没法正确识别
+>
+>错误示范
+>```
+>![[Pasted image 20260122161346.png | 300]]
+>```
+>正确显示
+>```
+>![[Pasted image 20260122161346.png |300]]
+>```
 
 >[!question]+  使用github action部署报错
 > ```
