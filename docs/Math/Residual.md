@@ -89,8 +89,11 @@ Amax指标的计算方式是这样的：有两个指标。第一个指标基于�
 
 #### Parameterization and Manifold Projection
 original HC
-![[Pasted image 20260123104116.png|500]]
+
+![[Pasted image 20260123104116.png|300]]
+
 mHC
+
 ![[Pasted image 20260123104446.png]]
 不是特别理解post乘以2的原因是啥
 #### Efficient Infrastructure Design (TODO)
