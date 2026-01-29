@@ -1,0 +1,3558 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+        <link rel="canonical" href="https://ray-lei-17.github.io/LearnAI-with-Ray/Math/ROPE/">
+      
+      
+        <link rel="prev" href="../RL%20for%20LLM/">
+      
+      
+        <link rel="next" href="../Residual/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.1">
+    
+    
+      
+        <title>ROPE - LearnAI-with-Ray</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.484c7ddc.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/extra.css">
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    <body dir="ltr">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#_1" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="LearnAI-with-Ray" class="md-header__button md-logo" aria-label="LearnAI-with-Ray" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            LearnAI-with-Ray
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              ROPE
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="LearnAI-with-Ray" class="md-nav__button md-logo" aria-label="LearnAI-with-Ray" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    LearnAI-with-Ray
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Conference
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Conference
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../Conference/Survey/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Survey
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Domain
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Domain
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../Domain/MLLM/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Multimodal LLM
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../Domain/MMEB-Retrieval/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    MMEB Retrieval
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../Domain/Quantization/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    量化
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../Domain/RAG/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    RAG
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Math
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Math
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Arch/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Arch
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../DPO/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    DPO
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Metrics/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Metrics
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../RL%20for%20LLM/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    RL for LLM
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ROPE
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ROPE
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        介绍
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="介绍">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1) 为什么要位置编码？
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-rope" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2) RoPE 做了什么？
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-2d" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3) “旋转”到底怎么实现？（2D 一组一组转）
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4) 这和传统正余弦位置编码有什么关系？
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#5-rope" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5) RoPE 为什么这么受欢迎？
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="5) RoPE 为什么这么受欢迎？">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ✅ (1) 天然相对位置
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ✅ (2) 对长上下文更友好（可外推）
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ✅ (3) 计算开销小、实现简单
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#6-rope" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6) 一句话理解 RoPE
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#rope" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ROPE中两两组合旋转
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="ROPE中两两组合旋转">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1) 为什么一定要“两两配对”？
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-token" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2) 同一个 token 里，每一对维度旋转角度相同吗？
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3) 你最关键的疑问：
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4-2d" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4) 更直观：2D 子空间里发生了什么？
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#5-token" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5) “但是 token 间相乘并没有两两配对呀？”——其实配对一直在
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#6" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6) 超短总结（给你脑子里定个画面）
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2d" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        一定要2D吗
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="一定要2D吗">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-2d" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1) 如果你坚持“旋转”这个想法：2D 是最小单位（不可省）
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2) 但你可以用“更高维旋转”，不必局限在“2维一对”
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2) 但你可以用“更高维旋转”，不必局限在“2维一对”">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#2d-block" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        那为什么大家都用 2D block？
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-2d_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3) 如果你不要求“旋转”，那当然不需要 2D
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3) 如果你不要求“旋转”，那当然不需要 2D">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#alibiattention-with-linear-bias" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ✅ ALiBi（Attention with Linear Bias）
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#biast5-style" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ✅ 相对位置 bias（T5-style）
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#sinusoidal-learned" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ✅ 绝对位置编码（sinusoidal / learned）
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4) 所以真正答案是：
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#5" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5) 一句话点破你这个问题的核心
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        复数表示法
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="复数表示法">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1_3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1) 两两配对 = 把向量当成复数
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2) 旋转在复数里是什么？——乘以单位复数
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-rope" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3) RoPE 的定义（复数版）
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4) 关键推导：为什么出现“相对位置”？
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#5-token_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5) 这也解释了你之前的困惑：为什么 token 间相乘不需要显式两两配对？
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#6_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6) 复数视角的直观理解（超级好记）
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#7-rope" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7) 你会发现 RoPE 其实就是“复数相位编码”
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#qk-rope-v" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        为什么只对 Q/K 做 RoPE，不对 V 做？
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="为什么只对 Q/K 做 RoPE，不对 V 做？">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-attention-qk-v" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1) Attention 的核心结构：QK 决定权重，V 决定内容
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-rope-qktopqktop" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2) RoPE 在数学上就是让 QK^\topQK^\top 依赖相对位置
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-v-rope" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3) 那如果你也对 V 做 RoPE，会发生什么？
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4-v" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4) 从直觉讲：V 应该是“可加的内容”，别乱旋转
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#5_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5) 更本质的视角：位置应该影响“选择”，不应该扭曲“被选中的内容”
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#6-v" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6) 你猜的“V 不需要保存位置信息”——再精炼一下
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#7-v" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7) 一个小补充：那 V 完全不含位置信息吗？
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        总结一句话
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#rope-scalingntk-scalingrope-scalingyarnlongrope" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        RoPE scaling（长上下文外推）和常见扩展（NTK scaling、RoPE scaling、YaRN、LongRoPE）
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="RoPE scaling（长上下文外推）和常见扩展（NTK scaling、RoPE scaling、YaRN、LongRoPE）">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#0-rope" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        0) 为什么 RoPE 一过训练长度就容易坏？
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#1-rope-scaling-position-interpolationpi" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1) RoPE Scaling / Position Interpolation（PI）：最简单粗暴，但很有效
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-ntk-aware-scaling" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2) NTK-aware scaling：关键改进——别一刀切，按频率分配“压缩压力”
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-yarn" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3) YaRN：把“频率分治”做成系统方案，并提供高效微调策略
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4-longrope-256k2m" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4) LongRoPE：把窗口推到 256K~2M 的“工程级”方案（少量微调）
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#6-rope_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6) 一个很关键但经常被忽略的点：长上下文不是只改 RoPE
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Residual/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Residual
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Personal Development
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Personal Development
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../Personal%20Development/GPT%E4%BE%9D%E8%B5%96/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    GPT依赖
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../Personal%20Development/%E5%85%8B%E6%9C%8D%E5%AE%8C%E7%BE%8E%E4%B8%BB%E4%B9%89/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    克服完美主义
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../Personal%20Development/%E9%A6%99%E8%95%89%E8%B6%8A%E5%A4%A7%EF%BC%8C%E9%A6%99%E8%95%89%E7%9A%AE%E8%B6%8A%E5%A4%A7/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    香蕉越大，香蕉皮越大
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Tool
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Tool
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../Tool/LLMRepo/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Very Useful Repo about LLM
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../Tool/Mac%20App/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Mac App
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../Tool/Mac-HiDPI/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Mac开启HiDPI
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../Tool/Obsidian-MkDocs/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Obsidian MkDocs
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../Tool/Vscode-Tunnel/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    VS Code Tunnel
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../Tool/args-kwargs/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    *args vs. **kwargs
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../Tool/git/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Git
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../Tool/python%E7%B1%BB%E8%A3%85%E9%A5%B0%E5%99%A8/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Python类装饰器
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../Tool/wandb/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Wandb使用
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../Tool/%E5%BE%AE%E4%BF%A1%E8%A7%86%E9%A2%91%E5%8F%B7%E4%B8%8B%E8%BD%BD/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    微信视频号下载
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../Tool/%E6%8A%BD%E8%B1%A1/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    什么时候需要代码抽象？
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        介绍
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="介绍">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1) 为什么要位置编码？
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-rope" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2) RoPE 做了什么？
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-2d" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3) “旋转”到底怎么实现？（2D 一组一组转）
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4) 这和传统正余弦位置编码有什么关系？
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#5-rope" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5) RoPE 为什么这么受欢迎？
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="5) RoPE 为什么这么受欢迎？">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ✅ (1) 天然相对位置
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ✅ (2) 对长上下文更友好（可外推）
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ✅ (3) 计算开销小、实现简单
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#6-rope" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6) 一句话理解 RoPE
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#rope" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ROPE中两两组合旋转
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="ROPE中两两组合旋转">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1) 为什么一定要“两两配对”？
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-token" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2) 同一个 token 里，每一对维度旋转角度相同吗？
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3) 你最关键的疑问：
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4-2d" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4) 更直观：2D 子空间里发生了什么？
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#5-token" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5) “但是 token 间相乘并没有两两配对呀？”——其实配对一直在
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#6" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6) 超短总结（给你脑子里定个画面）
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2d" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        一定要2D吗
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="一定要2D吗">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-2d" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1) 如果你坚持“旋转”这个想法：2D 是最小单位（不可省）
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2) 但你可以用“更高维旋转”，不必局限在“2维一对”
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2) 但你可以用“更高维旋转”，不必局限在“2维一对”">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#2d-block" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        那为什么大家都用 2D block？
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-2d_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3) 如果你不要求“旋转”，那当然不需要 2D
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3) 如果你不要求“旋转”，那当然不需要 2D">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#alibiattention-with-linear-bias" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ✅ ALiBi（Attention with Linear Bias）
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#biast5-style" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ✅ 相对位置 bias（T5-style）
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#sinusoidal-learned" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ✅ 绝对位置编码（sinusoidal / learned）
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4) 所以真正答案是：
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#5" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5) 一句话点破你这个问题的核心
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        复数表示法
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="复数表示法">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1_3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1) 两两配对 = 把向量当成复数
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2) 旋转在复数里是什么？——乘以单位复数
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-rope" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3) RoPE 的定义（复数版）
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4) 关键推导：为什么出现“相对位置”？
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#5-token_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5) 这也解释了你之前的困惑：为什么 token 间相乘不需要显式两两配对？
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#6_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6) 复数视角的直观理解（超级好记）
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#7-rope" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7) 你会发现 RoPE 其实就是“复数相位编码”
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#qk-rope-v" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        为什么只对 Q/K 做 RoPE，不对 V 做？
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="为什么只对 Q/K 做 RoPE，不对 V 做？">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-attention-qk-v" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1) Attention 的核心结构：QK 决定权重，V 决定内容
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-rope-qktopqktop" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2) RoPE 在数学上就是让 QK^\topQK^\top 依赖相对位置
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-v-rope" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3) 那如果你也对 V 做 RoPE，会发生什么？
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4-v" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4) 从直觉讲：V 应该是“可加的内容”，别乱旋转
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#5_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5) 更本质的视角：位置应该影响“选择”，不应该扭曲“被选中的内容”
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#6-v" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6) 你猜的“V 不需要保存位置信息”——再精炼一下
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#7-v" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7) 一个小补充：那 V 完全不含位置信息吗？
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        总结一句话
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#rope-scalingntk-scalingrope-scalingyarnlongrope" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        RoPE scaling（长上下文外推）和常见扩展（NTK scaling、RoPE scaling、YaRN、LongRoPE）
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="RoPE scaling（长上下文外推）和常见扩展（NTK scaling、RoPE scaling、YaRN、LongRoPE）">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#0-rope" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        0) 为什么 RoPE 一过训练长度就容易坏？
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#1-rope-scaling-position-interpolationpi" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1) RoPE Scaling / Position Interpolation（PI）：最简单粗暴，但很有效
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-ntk-aware-scaling" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2) NTK-aware scaling：关键改进——别一刀切，按频率分配“压缩压力”
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-yarn" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3) YaRN：把“频率分治”做成系统方案，并提供高效微调策略
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4-longrope-256k2m" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4) LongRoPE：把窗口推到 256K~2M 的“工程级”方案（少量微调）
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#6-rope_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6) 一个很关键但经常被忽略的点：长上下文不是只改 RoPE
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+
+  <h1>ROPE</h1>
+
+<h2 id="_1">介绍</h2>
+<p>可以。RoPE（<strong>Rotary Positional Embedding</strong>，旋转位置编码）是现在很多 LLM（LLaMA、Qwen、GLM 等）里最常用的<strong>相对位置编码</strong>方案之一。它的核心想法特别干净：</p>
+<blockquote>
+<p><strong>不给 token “加”位置向量，而是对 Q/K 做一个“随位置旋转”的变换，让注意力天然带上相对位置信息。</strong></p>
+</blockquote>
+<hr />
+<h3 id="1">1) 为什么要位置编码？</h3>
+<p>自注意力里，打分是：</p>
+<div class="arithmatex">
+<div class="MathJax_Preview">\text{score}(i,j)= q_i^\top k_j  </div>
+<script type="math/tex; mode=display">\text{score}(i,j)= q_i^\top k_j  </script>
+</div>
+<p>如果没有位置编码，模型只看到了“词是什么”，看不到“第几个词”。</p>
+<hr />
+<h3 id="2-rope">2) RoPE 做了什么？</h3>
+<p>RoPE 不把位置向量加到输入上，而是直接把 <strong>Query / Key 向量按位置做旋转</strong>：</p>
+<div class="arithmatex">
+<div class="MathJax_Preview">q_i' = R(i), q_i,\quad k_j' = R(j), k_j  </div>
+<script type="math/tex; mode=display">q_i' = R(i), q_i,\quad k_j' = R(j), k_j  </script>
+</div>
+<p>然后注意力分数用旋转后的：</p>
+<div class="arithmatex">
+<div class="MathJax_Preview">  
+(q_i')^\top (k_j') = (R(i)q_i)^\top (R(j)k_j)  
+</div>
+<script type="math/tex; mode=display">  
+(q_i')^\top (k_j') = (R(i)q_i)^\top (R(j)k_j)  
+</script>
+</div>
+<p>关键性质来了（旋转矩阵正交）：</p>
+<div class="arithmatex">
+<div class="MathJax_Preview">  
+(R(i)q_i)^\top (R(j)k_j) = q_i^\top R(i)^\top R(j), k_j  
+= q_i^\top R(j-i), k_j  
+</div>
+<script type="math/tex; mode=display">  
+(R(i)q_i)^\top (R(j)k_j) = q_i^\top R(i)^\top R(j), k_j  
+= q_i^\top R(j-i), k_j  
+</script>
+</div>
+<p>⚡ <strong>只依赖相对位置 (j-i)</strong><br />
+这就是 RoPE 的精髓：<strong>注意力天然变成相对位置感知</strong>。</p>
+<hr />
+<h3 id="3-2d">3) “旋转”到底怎么实现？（2D 一组一组转）</h3>
+<p>RoPE 会把向量维度两两配对：</p>
+<div class="arithmatex">
+<div class="MathJax_Preview">  
+(x_0,x_1),\ (x_2,x_3),\ \dots  
+</div>
+<script type="math/tex; mode=display">  
+(x_0,x_1),\ (x_2,x_3),\ \dots  
+</script>
+</div>
+<p>每一对当成二维平面中的一个点，然后按角度 (<span class="arithmatex"><span class="MathJax_Preview">\theta</span><script type="math/tex">\theta</script></span>) 旋转：</p>
+<div class="arithmatex">
+<div class="MathJax_Preview">  
+\begin{pmatrix}  
+x'_{2t}\  \\
+x'_{2t+1}  
+\end{pmatrix}
+=
+\begin{pmatrix}  
+\cos\theta_{t,i} &amp; -\sin\theta_{t,i}\  \\
+\sin\theta_{t,i} &amp; \cos\theta_{t,i}  
+\end{pmatrix}  
+\begin{pmatrix}  
+x_{2t}\  \\
+x_{2t+1}  
+\end{pmatrix}  
+</div>
+<script type="math/tex; mode=display">  
+\begin{pmatrix}  
+x'_{2t}\  \\
+x'_{2t+1}  
+\end{pmatrix}
+=
+\begin{pmatrix}  
+\cos\theta_{t,i} & -\sin\theta_{t,i}\  \\
+\sin\theta_{t,i} & \cos\theta_{t,i}  
+\end{pmatrix}  
+\begin{pmatrix}  
+x_{2t}\  \\
+x_{2t+1}  
+\end{pmatrix}  
+</script>
+</div>
+<p>其中角度和位置有关：</p>
+<div class="arithmatex">
+<div class="MathJax_Preview">  
+\theta_{t,i} = i \cdot \omega_t  
+</div>
+<script type="math/tex; mode=display">  
+\theta_{t,i} = i \cdot \omega_t  
+</script>
+</div>
+<p>(\omega_t) 是不同频率（类似正余弦位置编码的频率尺度）：</p>
+<div class="arithmatex">
+<div class="MathJax_Preview">  
+\omega_t = 10000^{-2t/d}  
+</div>
+<script type="math/tex; mode=display">  
+\omega_t = 10000^{-2t/d}  
+</script>
+</div>
+<p>所以：</p>
+<ul>
+<li>
+<p><strong>低维</strong>旋转快（捕捉短距离）</p>
+</li>
+<li>
+<p><strong>高维</strong>旋转慢（捕捉长距离）</p>
+</li>
+</ul>
+<hr />
+<h3 id="4">4) 这和传统正余弦位置编码有什么关系？</h3>
+<p>传统做法（绝对位置编码）是把位置向量加进去：</p>
+<div class="arithmatex">
+<div class="MathJax_Preview">  
+x_i + p_i  
+</div>
+<script type="math/tex; mode=display">  
+x_i + p_i  
+</script>
+</div>
+<p>RoPE 更像是把正余弦编码“搬进了注意力打分公式里”，并且变成了<strong>相对位置形式</strong>。</p>
+<p>更通俗一点：</p>
+<ul>
+<li>
+<p>Sinusoidal：<strong>位置当输入特征</strong></p>
+</li>
+<li>
+<p>RoPE：<strong>位置当几何变换（旋转）直接作用在 Q/K 上</strong></p>
+</li>
+</ul>
+<hr />
+<h3 id="5-rope">5) RoPE 为什么这么受欢迎？</h3>
+<h4 id="1_1">✅ (1) 天然相对位置</h4>
+<p>上面推导说明了注意力里出现 (R(j-i))，所以模型更容易学到“前后关系”。</p>
+<h4 id="2">✅ (2) 对长上下文更友好（可外推）</h4>
+<p>RoPE 结构上允许你在推理时用更长位置（虽然仍可能需要 scaling 技巧，比如 NTK/YaRN 等，但 RoPE 本身就比绝对编码强很多）。</p>
+<h4 id="3">✅ (3) 计算开销小、实现简单</h4>
+<p>就是对 Q/K 做一个 element-wise 的 cos/sin 组合，不需要额外的注意力 bias 表。</p>
+<hr />
+<h3 id="6-rope">6) 一句话理解 RoPE</h3>
+<blockquote>
+<p><strong>每个位置 i 给 Q/K 加一个“相位”，注意力比较时只看相位差，所以感知到相对距离。</strong></p>
+</blockquote>
+<h2 id="rope">ROPE中两两组合旋转</h2>
+<p>接下来我问GPT老师；为什么是两两配对呢，同一个token每一对维度旋转的角度是相同的吗，但是和别的token相乘的时候，没有两两配对相乘啊？实际回答我理解为，虽然相乘的时候没有专门分成两两相乘，但是最后确实是各个维度各自相乘再求和，其实加法怎么组合都行，两两组合就可以对应上旋转</p>
+<p>你这三个问题都戳在 RoPE 最“容易让人卡住”的点上了。我按你提问顺序把逻辑捋顺：</p>
+<hr />
+<h3 id="1_2">1) 为什么一定要“两两配对”？</h3>
+<p>因为 RoPE 做的是 <strong>旋转（rotation）</strong>，而“旋转”天然定义在 <strong>2D 平面</strong>里。</p>
+<ul>
+<li>
+<p>1D 里你没法“旋转”，只能乘一个数（缩放/翻转）</p>
+</li>
+<li>
+<p>2D 里才有经典旋转矩阵：</p>
+</li>
+</ul>
+<div class="arithmatex">
+<div class="MathJax_Preview">  
+\begin{pmatrix}  
+\cos\theta &amp; -\sin\theta\  \\
+\sin\theta &amp; \cos\theta  
+\end{pmatrix}  
+</div>
+<script type="math/tex; mode=display">  
+\begin{pmatrix}  
+\cos\theta & -\sin\theta\  \\
+\sin\theta & \cos\theta  
+\end{pmatrix}  
+</script>
+</div>
+<p>所以把向量维度 <strong>两两分组</strong>，每一组当成一个二维向量去转。</p>
+<blockquote>
+<p>本质：把高维向量拆成很多个 2D 子空间，每个子空间做一个旋转。</p>
+</blockquote>
+<p>这也解释了为什么 RoPE 的维度一般要求是偶数。</p>
+<hr />
+<h3 id="2-token">2) 同一个 token 里，每一对维度旋转角度相同吗？</h3>
+<p><strong>不相同。</strong><br />
+同一个 token 在不同“维度对”上旋转角度不同：</p>
+<div class="arithmatex">
+<div class="MathJax_Preview">  
+\theta_{t,i} = i \cdot \omega_t  
+</div>
+<script type="math/tex; mode=display">  
+\theta_{t,i} = i \cdot \omega_t  
+</script>
+</div>
+<ul>
+<li>
+<p>(i) 是 token 位置</p>
+</li>
+<li>
+<p>(t) 是第几对维度（第几个 2D 子空间）</p>
+</li>
+<li>
+<p>(\omega_t) 是不同频率（随 (t) 变化）</p>
+</li>
+</ul>
+<p>所以对固定 token 位置 (i)：</p>
+<ul>
+<li>
+<p>第 0 对：角度 (i\omega_0)（通常变化最快）</p>
+</li>
+<li>
+<p>第 1 对：角度 (i\omega_1)</p>
+</li>
+<li>
+<p>…</p>
+</li>
+<li>
+<p>后面某些对：角度变化很慢（负责长距离）</p>
+</li>
+</ul>
+<blockquote>
+<p>同一个 token：不同维度对 = 不同频率的“相位”，角度各不一样。</p>
+</blockquote>
+<p>这个设计跟传统 sinusoidal positional encoding 一样：不同维度用不同频率，才能同时表达短程/长程位置信息。</p>
+<hr />
+<h3 id="3_1">3) 你最关键的疑问：</h3>
+<p><strong>“注意力是做 (<span class="arithmatex"><span class="MathJax_Preview">q^\top k</span><script type="math/tex">q^\top k</script></span>)，不是两两配对相乘啊？那两两配对旋转怎么还对 dot-product 有用？”</strong></p>
+<p>这就是 RoPE 最妙的一点：<br />
+虽然最终是整体 dot-product，但它可以拆成每个 2D 子空间的 dot-product 相加。</p>
+<p>因为：</p>
+<div class="arithmatex">
+<div class="MathJax_Preview">  
+q^\top k = \sum_{m=0}^{d-1} q_m k_m  
+</div>
+<script type="math/tex; mode=display">  
+q^\top k = \sum_{m=0}^{d-1} q_m k_m  
+</script>
+</div>
+<p>如果你把维度按 pair 分组：</p>
+<div class="arithmatex">
+<div class="MathJax_Preview">  
+q^\top k  
+= \sum_{t} \Big(q_{2t}k_{2t} + q_{2t+1}k_{2t+1}\Big)  
+</div>
+<script type="math/tex; mode=display">  
+q^\top k  
+= \sum_{t} \Big(q_{2t}k_{2t} + q_{2t+1}k_{2t+1}\Big)  
+</script>
+</div>
+<p>也就是：</p>
+<blockquote>
+<p><strong>整体内积 = 各个二维小块内积的总和。</strong></p>
+</blockquote>
+<p>而 RoPE 的旋转是“在每个二维小块里转”，所以它直接改变每个小块的内积，从而改变总内积。</p>
+<hr />
+<h3 id="4-2d">4) 更直观：2D 子空间里发生了什么？</h3>
+<p>把某一对维度看成二维向量：</p>
+<ul>
+<li>
+<p><span class="arithmatex"><span class="MathJax_Preview">(q_t = (q_{2t}, q_{2t+1}))</span><script type="math/tex">(q_t = (q_{2t}, q_{2t+1}))</script></span></p>
+</li>
+<li>
+<p><span class="arithmatex"><span class="MathJax_Preview">(k_t = (k_{2t}, k_{2t+1}))</span><script type="math/tex">(k_t = (k_{2t}, k_{2t+1}))</script></span></p>
+</li>
+</ul>
+<p>旋转后：</p>
+<div class="arithmatex">
+<div class="MathJax_Preview">  
+q_t' = R(i) q_t,\quad k_t' = R(j) k_t  
+</div>
+<script type="math/tex; mode=display">  
+q_t' = R(i) q_t,\quad k_t' = R(j) k_t  
+</script>
+</div>
+<p>这一对维度对注意力贡献是：</p>
+<div class="arithmatex">
+<div class="MathJax_Preview">  
+(q_t')^\top (k_t')  
+= (R(i)q_t)^\top (R(j)k_t)  
+= q_t^\top R(i)^\top R(j) k_t  
+= q_t^\top R(j-i) k_t  
+</div>
+<script type="math/tex; mode=display">  
+(q_t')^\top (k_t')  
+= (R(i)q_t)^\top (R(j)k_t)  
+= q_t^\top R(i)^\top R(j) k_t  
+= q_t^\top R(j-i) k_t  
+</script>
+</div>
+<p>注意最后只剩下 <strong>相对位置 (<span class="arithmatex"><span class="MathJax_Preview">j-i</span><script type="math/tex">j-i</script></span>)</strong>。</p>
+<p>然后把所有 t 加起来，整个 head 的注意力就带上了相对位置信息。</p>
+<hr />
+<h3 id="5-token">5) “但是 token 间相乘并没有两两配对呀？”——其实配对一直在</h3>
+<p>你看到的是：</p>
+<ul>
+<li>最后算的是 (<span class="arithmatex"><span class="MathJax_Preview">q^\top k</span><script type="math/tex">q^\top k</script></span>)（整体）</li>
+</ul>
+<p>但本质上它确实是：</p>
+<ul>
+<li>各个 pair 的 2D dot-product <strong>一块一块算完再加起来</strong></li>
+</ul>
+<p>这就是为什么 RoPE 只需要在 pair 内旋转就能影响整体 attention score。</p>
+<hr />
+<h3 id="6">6) 超短总结（给你脑子里定个画面）</h3>
+<ul>
+<li>
+<p><strong>两两配对</strong>：因为旋转必须在 2D 中定义</p>
+</li>
+<li>
+<p><strong>不同 pair 角度不同</strong>：因为每对维度有不同频率 (<span class="arithmatex"><span class="MathJax_Preview">\omega_t</span><script type="math/tex">\omega_t</script></span>)，同一 token 在不同子空间转不同角度</p>
+</li>
+<li>
+<p><strong>虽然内积不是“显式两两配对相乘”</strong>：但内积可以拆成“每个 pair 的 2D 内积之和”，RoPE 正好逐块改变这些内积 → 总分数就变了</p>
+</li>
+</ul>
+<h2 id="2d">一定要2D吗</h2>
+<p>对，你这个判断很到位：<strong>“不一定非要二维对”</strong>——但要分清两件事：</p>
+<ol>
+<li>
+<p><strong>“注入相对位置信息”不一定要 2D</strong></p>
+</li>
+<li>
+<p><strong>“用旋转（rotation）这种形式注入”基本就离不开 2D（或复数等价的 2D）</strong></p>
+</li>
+</ol>
+<p>我给你一个清晰的结论：</p>
+<blockquote>
+<p><strong>RoPE 之所以用 2D 配对，是因为它想用“正交旋转”这种结构，让 dot-product 只依赖相对位置。这个性质在 2D 旋转（或其高维正交块）里最自然、最便宜。</strong></p>
+</blockquote>
+<hr />
+<h3 id="1-2d">1) 如果你坚持“旋转”这个想法：2D 是最小单位（不可省）</h3>
+<p>在 1D 里你能做的“正交变换”只有两种：</p>
+<ul>
+<li>
+<p>乘以 (+1)（不变）</p>
+</li>
+<li>
+<p>乘以 (-1)（翻转）</p>
+</li>
+</ul>
+<p>也就是说 1D 的“旋转”根本不存在，只有符号翻转，没法产生连续角度。</p>
+<p>RoPE 需要的是一个随位置变化的连续相位 (\theta=i\omega)，所以最小实现单位就是 2D：</p>
+<div class="arithmatex">
+<div class="MathJax_Preview">  
+R(\theta)=  
+\begin{pmatrix}  
+\cos\theta &amp; -\sin\theta\  
+\sin\theta &amp; \cos\theta  
+\end{pmatrix}  
+</div>
+<script type="math/tex; mode=display">  
+R(\theta)=  
+\begin{pmatrix}  
+\cos\theta & -\sin\theta\  
+\sin\theta & \cos\theta  
+\end{pmatrix}  
+</script>
+</div>
+<p>✅ <strong>所以：如果你要保持 RoPE 的结构（正交旋转 + 相位差），最小就必须 2D。</strong></p>
+<hr />
+<h3 id="2-2">2) 但你可以用“更高维旋转”，不必局限在“2维一对”</h3>
+<p>你完全可以在 4D / 8D 的子空间里做正交变换：</p>
+<div class="arithmatex">
+<div class="MathJax_Preview">  
+q' = R_i q,\quad k' = R_j k  
+</div>
+<script type="math/tex; mode=display">  
+q' = R_i q,\quad k' = R_j k  
+</script>
+</div>
+<p>只要满足：</p>
+<ul>
+<li>
+<p>(R_i) 是正交矩阵（保持长度）</p>
+</li>
+<li>
+<p>(R_i^\top R_j = R_{j-i})（相对位置的群性质）</p>
+</li>
+</ul>
+<p>那你依然能得到：</p>
+<div class="arithmatex">
+<div class="MathJax_Preview">  
+(q_i')^\top (k_j') = q_i^\top R_{j-i} k_j  
+</div>
+<script type="math/tex; mode=display">  
+(q_i')^\top (k_j') = q_i^\top R_{j-i} k_j  
+</script>
+</div>
+<h4 id="2d-block">那为什么大家都用 2D block？</h4>
+<p>因为任意高维正交旋转矩阵，都能分解成很多个 <strong>2D 平面旋转的直和</strong>（线性代数里叫 block diagonal / Givens rotations 这类思想）。</p>
+<p>也就是说：</p>
+<blockquote>
+<p>你以为你在做 4D 旋转，本质上它还是“若干个 2D 旋转拼起来”。</p>
+</blockquote>
+<p>所以 2D 配对不是“唯一可能”，但它是<strong>最原子、最省参数、最省计算</strong>的实现。</p>
+<hr />
+<h3 id="3-2d_1">3) 如果你不要求“旋转”，那当然不需要 2D</h3>
+<p>RoPE 的目标是“让注意力带位置信息”，旋转只是其中一种优雅方式。</p>
+<p>其他常见做法完全不需要 2D 配对，例如：</p>
+<h4 id="alibiattention-with-linear-bias">✅ ALiBi（Attention with Linear Bias）</h4>
+<p>直接在注意力 logits 上加偏置：</p>
+<div class="arithmatex">
+<div class="MathJax_Preview">  
+\text{score}(i,j)= q_i^\top k_j - m\cdot|i-j|  
+</div>
+<script type="math/tex; mode=display">  
+\text{score}(i,j)= q_i^\top k_j - m\cdot|i-j|  
+</script>
+</div>
+<p>它是相对位置，但不是旋转。</p>
+<h4 id="biast5-style">✅ 相对位置 bias（T5-style）</h4>
+<p>用一个表/函数给每个相对距离一个 bias。</p>
+<h4 id="sinusoidal-learned">✅ 绝对位置编码（sinusoidal / learned）</h4>
+<p>直接加到输入 embedding 上。</p>
+<p>这些都能注入位置信息，只是性质和 RoPE 不同。</p>
+<hr />
+<h3 id="4_1">4) 所以真正答案是：</h3>
+<ul>
+<li>
+<p><strong>如果你要“连续相位差 + 正交变换 + 内积只依赖相对距离”</strong><br />
+    👉 最自然、最小单位就是 <strong>2D（或等价复数）</strong></p>
+</li>
+<li>
+<p><strong>如果你只要“给注意力加位置感”</strong><br />
+    👉 完全不必 2D，有很多别的路</p>
+</li>
+</ul>
+<hr />
+<h3 id="5">5) 一句话点破你这个问题的核心</h3>
+<blockquote>
+<p>RoPE 的“两两配对”不是因为“维度必须这样才能相乘”，而是因为 <strong>旋转这种几何操作最小需要二维</strong>，而且它能保证一个超关键性质：相对位置只体现在“相位差”上。</p>
+</blockquote>
+<h2 id="_2">复数表示法</h2>
+<p>好，我们用<strong>复数表示法</strong>把 RoPE 讲一遍，你会发现它一下子变得特别“干净”，而且你前面所有疑问（为什么两两配对、为什么相对位置）都会自动解释清楚。</p>
+<hr />
+<h3 id="1_3">1) 两两配对 = 把向量当成复数</h3>
+<p>把每一对维度 <span class="arithmatex"><span class="MathJax_Preview">(x_{2t}, x_{2t+1})</span><script type="math/tex">(x_{2t}, x_{2t+1})</script></span>组成一个复数：</p>
+<div class="arithmatex">
+<div class="MathJax_Preview">  
+z_t = x_{2t} + i,x_{2t+1}  
+</div>
+<script type="math/tex; mode=display">  
+z_t = x_{2t} + i,x_{2t+1}  
+</script>
+</div>
+<p>于是一个 <span class="arithmatex"><span class="MathJax_Preview">d</span><script type="math/tex">d</script></span>-维向量（假设 <span class="arithmatex"><span class="MathJax_Preview">d</span><script type="math/tex">d</script></span> 是偶数）就变成了 <span class="arithmatex"><span class="MathJax_Preview">d/2</span><script type="math/tex">d/2</script></span> 个复数：</p>
+<div class="arithmatex">
+<div class="MathJax_Preview">  
+x \quad \leftrightarrow \quad (z_0, z_1, \dots, z_{d/2-1})  
+</div>
+<script type="math/tex; mode=display">  
+x \quad \leftrightarrow \quad (z_0, z_1, \dots, z_{d/2-1})  
+</script>
+</div>
+<p>这就是“必须两两配对”的根本原因：<br />
+<strong>复数就是 2D（实部+虚部）的最自然表示。</strong></p>
+<hr />
+<h3 id="2_1">2) 旋转在复数里是什么？——乘以单位复数</h3>
+<p>在 2D 平面中旋转角度 <span class="arithmatex"><span class="MathJax_Preview">\theta</span><script type="math/tex">\theta</script></span>，用复数写就是：</p>
+<div class="arithmatex">
+<div class="MathJax_Preview">  
+z' = z \cdot e^{i\theta}  
+</div>
+<script type="math/tex; mode=display">  
+z' = z \cdot e^{i\theta}  
+</script>
+</div>
+<p>因为：</p>
+<div class="arithmatex">
+<div class="MathJax_Preview">  
+e^{i\theta} = \cos\theta + i\sin\theta  
+</div>
+<script type="math/tex; mode=display">  
+e^{i\theta} = \cos\theta + i\sin\theta  
+</script>
+</div>
+<p>而复数乘法本质就是在 2D 里做旋转+缩放。<br />
+这里 <span class="arithmatex"><span class="MathJax_Preview">e^{i\theta}</span><script type="math/tex">e^{i\theta}</script></span>的模长为 1，所以<strong>纯旋转不缩放</strong>。</p>
+<hr />
+<h3 id="3-rope">3) RoPE 的定义（复数版）</h3>
+<p>对 token 位置 (p)，对第 (t) 个频率子空间，角度为：</p>
+<div class="arithmatex">
+<div class="MathJax_Preview">  
+\theta_{t,p} = p \cdot \omega_t  
+</div>
+<script type="math/tex; mode=display">  
+\theta_{t,p} = p \cdot \omega_t  
+</script>
+</div>
+<p>那么对 Query / Key 的复数表示：</p>
+<div class="arithmatex">
+<div class="MathJax_Preview">  
+\tilde q_{t,p} = q_{t,p}\cdot e^{i\theta_{t,p}},\quad  
+\tilde k_{t,p} = k_{t,p}\cdot e^{i\theta_{t,p}}  
+</div>
+<script type="math/tex; mode=display">  
+\tilde q_{t,p} = q_{t,p}\cdot e^{i\theta_{t,p}},\quad  
+\tilde k_{t,p} = k_{t,p}\cdot e^{i\theta_{t,p}}  
+</script>
+</div>
+<p>注意：</p>
+<ul>
+<li>
+<p><span class="arithmatex"><span class="MathJax_Preview">q_{t,p}, k_{t,p}</span><script type="math/tex">q_{t,p}, k_{t,p}</script></span>本身就是复数（由两个维度组成）</p>
+</li>
+<li>
+<p>RoPE 就是乘上一个位置相关的相位 <span class="arithmatex"><span class="MathJax_Preview">e^{i\theta}</span><script type="math/tex">e^{i\theta}</script></span></p>
+</li>
+</ul>
+<hr />
+<h3 id="4_2">4) 关键推导：为什么出现“相对位置”？</h3>
+<p>注意力打分是内积 <span class="arithmatex"><span class="MathJax_Preview">q^\top k</span><script type="math/tex">q^\top k</script></span>。<br />
+用复数表示时，每个频率子空间（每对维度）的贡献可以写成：</p>
+<div class="arithmatex">
+<div class="MathJax_Preview">  
+pair\_dot(\tilde q_{t,i}, \tilde k_{t,j}) = \Re\Big(\tilde q_{t,i}\cdot \overline{\tilde k_{t,j}}\Big)
+</div>
+<script type="math/tex; mode=display">  
+pair\_dot(\tilde q_{t,i}, \tilde k_{t,j}) = \Re\Big(\tilde q_{t,i}\cdot \overline{\tilde k_{t,j}}\Big)
+</script>
+</div>
+<p>这里：</p>
+<ul>
+<li>
+<p><span class="arithmatex"><span class="MathJax_Preview">\overline{k}</span><script type="math/tex">\overline{k}</script></span>是复共轭</p>
+</li>
+<li>
+<p><span class="arithmatex"><span class="MathJax_Preview">\Re(\cdot)</span><script type="math/tex">\Re(\cdot)</script></span> 取实部<br />
+    （它等价于二维向量的点积）</p>
+</li>
+</ul>
+<p>代入 RoPE 旋转：</p>
+<div class="arithmatex">
+<div class="MathJax_Preview">  
+\tilde q_{t,i}\cdot \overline{\tilde k_{t,j}} = (q_{t,i}e^{i\theta_{t,i}})\cdot \overline{k_{t,j}e^{i\theta_{t,j}}} =(q_{t,i}e^{i\theta_{t,i}})\cdot (\overline{k_{t,j}}e^{-i\theta_{t,j}})  
+</div>
+<script type="math/tex; mode=display">  
+\tilde q_{t,i}\cdot \overline{\tilde k_{t,j}} = (q_{t,i}e^{i\theta_{t,i}})\cdot \overline{k_{t,j}e^{i\theta_{t,j}}} =(q_{t,i}e^{i\theta_{t,i}})\cdot (\overline{k_{t,j}}e^{-i\theta_{t,j}})  
+</script>
+</div>
+<p>合并相位：</p>
+<div class="arithmatex">
+<div class="MathJax_Preview">  
+= q_{t,i}\overline{k_{t,j}} \cdot e^{i(\theta_{t,i}-\theta_{t,j})}  
+</div>
+<script type="math/tex; mode=display">  
+= q_{t,i}\overline{k_{t,j}} \cdot e^{i(\theta_{t,i}-\theta_{t,j})}  
+</script>
+</div>
+<p>再把 (\theta_{t,p}=p\omega_t) 代入：</p>
+<div class="arithmatex">
+<div class="MathJax_Preview">  
+e^{i(\theta_{t,i}-\theta_{t,j})}  
+= e^{i(i-j)\omega_t}  
+</div>
+<script type="math/tex; mode=display">  
+e^{i(\theta_{t,i}-\theta_{t,j})}  
+= e^{i(i-j)\omega_t}  
+</script>
+</div>
+<p>💥 你看到了：<strong>只剩下 (i-j)</strong>。</p>
+<p>所以每个子空间的贡献变成：</p>
+<div class="arithmatex">
+<div class="MathJax_Preview">  
+\Re\Big(q_{t,i}\overline{k_{t,j}} \cdot e^{i(i-j)\omega_t}\Big)  
+</div>
+<script type="math/tex; mode=display">  
+\Re\Big(q_{t,i}\overline{k_{t,j}} \cdot e^{i(i-j)\omega_t}\Big)  
+</script>
+</div>
+<p>整头注意力就是所有子空间相加：</p>
+<div class="arithmatex">
+<div class="MathJax_Preview">  
+\text{score}(i,j)=\sum_t \Re\Big(q_{t,i}\overline{k_{t,j}} \cdot e^{i(i-j)\omega_t}\Big)  
+</div>
+<script type="math/tex; mode=display">  
+\text{score}(i,j)=\sum_t \Re\Big(q_{t,i}\overline{k_{t,j}} \cdot e^{i(i-j)\omega_t}\Big)  
+</script>
+</div>
+<p>✅ 这就是“RoPE = 相对位置编码”的本质：<br />
+<strong>注意力分数只依赖相对距离 (i-j)</strong>（通过相位差体现）。</p>
+<hr />
+<h3 id="5-token_1">5) 这也解释了你之前的困惑：为什么 token 间相乘不需要显式两两配对？</h3>
+<p>因为内积本来就是各维度乘积求和；<br />
+在复数视角里，它等价于：</p>
+<ul>
+<li>
+<p>每一对维度当一个复数</p>
+</li>
+<li>
+<p>复数乘共轭取实部，就是这个二维点积</p>
+</li>
+<li>
+<p>最终所有频率通道加起来就是原来的 (q^\top k)</p>
+</li>
+</ul>
+<p>所以“两两配对”不是为了“方便相乘”，而是为了：</p>
+<blockquote>
+<p>在每个 2D 子空间里植入一个“相位”，让 dot-product 自动带上相位差（相对位置）。</p>
+</blockquote>
+<hr />
+<h3 id="6_1">6) 复数视角的直观理解（超级好记）</h3>
+<p>把每个 token 的 Q/K 想成一堆“不同频率的转盘指针”：</p>
+<ul>
+<li>
+<p>token 在位置<span class="arithmatex"><span class="MathJax_Preview">p</span><script type="math/tex">p</script></span></p>
+</li>
+<li>
+<p>第<span class="arithmatex"><span class="MathJax_Preview">t</span><script type="math/tex">t</script></span>个转盘转到角度 (<span class="arithmatex"><span class="MathJax_Preview">p\omega_t</span><script type="math/tex">p\omega_t</script></span>)</p>
+</li>
+<li>
+<p>两个 token 做注意力时，比的是“指针相对角度差”</p>
+</li>
+</ul>
+<p>所以相对距离<span class="arithmatex"><span class="MathJax_Preview">i-j</span><script type="math/tex">i-j</script></span> 就像：</p>
+<div class="arithmatex">
+<div class="MathJax_Preview">  
+\Delta \theta = (i-j)\omega_t  
+</div>
+<script type="math/tex; mode=display">  
+\Delta \theta = (i-j)\omega_t  
+</script>
+</div>
+<p>而不同频率 <span class="arithmatex"><span class="MathJax_Preview">\omega_t</span><script type="math/tex">\omega_t</script></span>提供不同尺度的“测距能力”。</p>
+<hr />
+<h3 id="7-rope">7) 你会发现 RoPE 其实就是“复数相位编码”</h3>
+<p>传统 sinusoidal 是把 <span class="arithmatex"><span class="MathJax_Preview">\sin,\cos</span><script type="math/tex">\sin,\cos</script></span>加到输入里；<br />
+RoPE 是把它当成相位<span class="arithmatex"><span class="MathJax_Preview">e^{ip\omega}</span><script type="math/tex">e^{ip\omega}</script></span> 直接乘到 Q/K 上：</p>
+<ul>
+<li>
+<p>加法编码：<span class="arithmatex"><span class="MathJax_Preview">x + p</span><script type="math/tex">x + p</script></span></p>
+</li>
+<li>
+<p>乘法编码（相位）：<span class="arithmatex"><span class="MathJax_Preview">x \cdot e^{i\theta}</span><script type="math/tex">x \cdot e^{i\theta}</script></span></p>
+</li>
+</ul>
+<p>乘法的好处就是：<strong>相位差会自动在内积里出现</strong>。</p>
+<hr />
+<p>如果你想继续深入，我建议你看下一步会很爽：</p>
+<h2 id="qk-rope-v">为什么只对 Q/K 做 RoPE，不对 V 做？</h2>
+<blockquote>
+<p><strong>RoPE 的目的不是“让表示本身带位置”，而是让“注意力权重的计算”带位置（相对位置信息）。</strong><br />
+所以它只需要作用在 <strong>产生权重的那一侧：Q 和 K</strong>。<br />
+<strong>V 只是被加权求和的内容载体，旋转它不会帮你算出更好的权重，反而可能伤害内容表达。</strong></p>
+</blockquote>
+<p>下面我用一套非常“算式 + 直觉”组合拳讲透。</p>
+<hr />
+<h3 id="1-attention-qk-v">1) Attention 的核心结构：QK 决定权重，V 决定内容</h3>
+<p>自注意力一层可以写成：</p>
+<div class="arithmatex">
+<div class="MathJax_Preview">  
+A = \text{softmax}\left(\frac{QK^\top}{\sqrt{d}}\right)  
+$$  
+$$  
+\text{out} = A V  
+</div>
+<script type="math/tex; mode=display">  
+A = \text{softmax}\left(\frac{QK^\top}{\sqrt{d}}\right)  
+$$  
+$$  
+\text{out} = A V  
+</script>
+</div>
+<ul>
+<li>
+<p><strong><span class="arithmatex"><span class="MathJax_Preview">QK^\top</span><script type="math/tex">QK^\top</script></span></strong>：决定“我该看谁”（权重）</p>
+</li>
+<li>
+<p><strong><span class="arithmatex"><span class="MathJax_Preview">AV</span><script type="math/tex">AV</script></span></strong>：决定“我拿到什么信息”（加权内容）</p>
+</li>
+</ul>
+<p>所以如果你想注入“位置关系”，最直接、最有效的地方就是 <strong>权重 (A)</strong>。</p>
+<hr />
+<h3 id="2-rope-qktopqktop">2) RoPE 在数学上就是让 <span class="arithmatex"><span class="MathJax_Preview">QK^\top</span><script type="math/tex">QK^\top</script></span> 依赖相对位置</h3>
+<p>RoPE 做的是：</p>
+<div class="arithmatex">
+<div class="MathJax_Preview">  
+Q' = R(p)Q,\quad K' = R(p)K  
+</div>
+<script type="math/tex; mode=display">  
+Q' = R(p)Q,\quad K' = R(p)K  
+</script>
+</div>
+<p>于是 score 变成（对某个 <span class="arithmatex"><span class="MathJax_Preview">i,j</span><script type="math/tex">i,j</script></span>）：</p>
+<div class="arithmatex">
+<div class="MathJax_Preview">  
+(q_i')^\top (k_j') = q_i^\top R(j-i) k_j  
+</div>
+<script type="math/tex; mode=display">  
+(q_i')^\top (k_j') = q_i^\top R(j-i) k_j  
+</script>
+</div>
+<p>你看，它通过 <strong>Q 和 K 的相位差</strong>，让分数天然带上 <span class="arithmatex"><span class="MathJax_Preview">j-i</span><script type="math/tex">j-i</script></span>。</p>
+<p>✅ 所以 RoPE “工作的战场”就在 <strong>score 这一步</strong>。</p>
+<hr />
+<h3 id="3-v-rope">3) 那如果你也对 V 做 RoPE，会发生什么？</h3>
+<p>假设你也旋转 V：</p>
+<div class="arithmatex">
+<div class="MathJax_Preview">  
+V' = R(p) V  
+</div>
+<script type="math/tex; mode=display">  
+V' = R(p) V  
+</script>
+</div>
+<p>输出变成：</p>
+<div class="arithmatex">
+<div class="MathJax_Preview">  
+\text{out}_i = \sum_j A_{ij} v_j'  
+= \sum_j A_{ij} R(j), v_j  
+</div>
+<script type="math/tex; mode=display">  
+\text{out}_i = \sum_j A_{ij} v_j'  
+= \sum_j A_{ij} R(j), v_j  
+</script>
+</div>
+<p>注意：<strong>权重 <span class="arithmatex"><span class="MathJax_Preview">A_{ij}</span><script type="math/tex">A_{ij}</script></span></strong> 已经通过 Q/K 含有相对位置了。<br />
+现在你又把每个 value 额外乘了一个位置旋转 <span class="arithmatex"><span class="MathJax_Preview">R(j)</span><script type="math/tex">R(j)</script></span>。</p>
+<p><strong>这会引发一个很关键的问题：</strong></p>
+<p>你输出里混进了 <strong>绝对位置依赖</strong>（j 的绝对角度），而不是你想要的相对位置。</p>
+<p>也就是说：</p>
+<ul>
+<li>
+<p>Q/K 的 RoPE：把“相对位置”正确注入到 <strong>谁影响谁</strong></p>
+</li>
+<li>
+<p>V 的 RoPE：把“绝对位置相位”强行注入到 <strong>内容本身</strong></p>
+</li>
+</ul>
+<p>这通常不是你想要的，因为注意力输出是多个 token 的内容混合，如果每个内容都带一个不同绝对相位，混起来会像“每个向量被随机旋转再相加”，很容易变得难学。</p>
+<hr />
+<h3 id="4-v">4) 从直觉讲：V 应该是“可加的内容”，别乱旋转</h3>
+<p>注意力输出是加权求和：</p>
+<div class="arithmatex">
+<div class="MathJax_Preview">  
+\text{out}_i = \sum_j A_{ij} v_j  
+</div>
+<script type="math/tex; mode=display">  
+\text{out}_i = \sum_j A_{ij} v_j  
+</script>
+</div>
+<p>这要求 <span class="arithmatex"><span class="MathJax_Preview">v_j</span><script type="math/tex">v_j</script></span>处在一个“共同坐标系”里，才能稳定相加。</p>
+<p>如果你对每个位置的 <span class="arithmatex"><span class="MathJax_Preview">v_j</span><script type="math/tex">v_j</script></span> 做不同旋转 <span class="arithmatex"><span class="MathJax_Preview">R(j)</span><script type="math/tex">R(j)</script></span>，等于把每个 <span class="arithmatex"><span class="MathJax_Preview">v_j</span><script type="math/tex">v_j</script></span>放到不同坐标系里再求和：</p>
+<ul>
+<li>
+<p>你想加 “语义信息”</p>
+</li>
+<li>
+<p>但你先把每个语义向量转了不同角度</p>
+</li>
+<li>
+<p>加起来语义方向对不齐，模型更难利用</p>
+</li>
+</ul>
+<p>所以对 V 做 RoPE 往往是<strong>破坏性更强</strong>的操作。</p>
+<hr />
+<h3 id="5_1">5) 更本质的视角：位置应该影响“选择”，不应该扭曲“被选中的内容”</h3>
+<p>你可以把注意力理解为：</p>
+<ol>
+<li>
+<p>用 Q/K 决定去哪儿拿信息（路由/寻址）</p>
+</li>
+<li>
+<p>用 V 提供被拿走的信息（payload）</p>
+</li>
+</ol>
+<p>RoPE 是一种“位置感知寻址方式”，所以放在 Q/K 上非常合理。</p>
+<p>而 V 就是 payload，你一般不希望 payload 被位置变换扭曲，否则同一个 token 的内容会因为它在不同位置而变得“表达方式不同”，不利于泛化。</p>
+<hr />
+<h3 id="6-v">6) 你猜的“V 不需要保存位置信息”——再精炼一下</h3>
+<p>更准确的说法是：</p>
+<ul>
+<li>
+<p><strong>位置关系需要体现在“权重 A”里</strong>，因为 A 决定“相互作用模式”</p>
+</li>
+<li>
+<p><strong>V 不需要额外加位置</strong>，因为位置已经通过 A 影响了输出组合方式<br />
+    （你可以理解为：位置已经决定了“从哪里取”，取到的内容本身不必再被位置编码污染）</p>
+</li>
+</ul>
+<hr />
+<h3 id="7-v">7) 一个小补充：那 V 完全不含位置信息吗？</h3>
+<p>不完全是。</p>
+<p>即使你不对 V 显式 RoPE：</p>
+<ul>
+<li>
+<p>token 的隐藏表示本身（经过多层）已经会包含上下文结构信息</p>
+</li>
+<li>
+<p>而且注意力权重 A 已经按位置组织信息流</p>
+</li>
+</ul>
+<p>所以最终 out 里当然包含位置相关的结构，只是它来自“路由方式”，而不是来自“把 payload 也旋转”。</p>
+<hr />
+<h3 id="_3">总结一句话</h3>
+<p><strong>只对 Q/K 做 RoPE</strong> 是因为 RoPE 需要让 <strong>attention score（谁看谁）</strong> 带相对位置；<br />
+而 <strong>V 是内容（看到了拿什么）</strong>，旋转它会把绝对位置相位混进内容求和里，通常弊大于利。</p>
+<h2 id="rope-scalingntk-scalingrope-scalingyarnlongrope">RoPE scaling（长上下文外推）和常见扩展（NTK scaling、RoPE scaling、YaRN、LongRoPE）</h2>
+<p>好，我们来把 <strong>RoPE 长上下文外推</strong>这条线一次讲清楚：<strong>为什么会崩、怎么修、每种方法在改什么、各自代价是什么</strong>。我会按你点名的四个：<strong>RoPE scaling / Position Interpolation、NTK scaling、YaRN、LongRoPE</strong> 讲，并给你一个“怎么选”的实践指南。</p>
+<hr />
+<h3 id="0-rope">0) 为什么 RoPE 一过训练长度就容易坏？</h3>
+<p>RoPE 的本质是给每个维度对一个相位：</p>
+<div class="arithmatex">
+<div class="MathJax_Preview">  
+\theta_{t,p} = p\cdot \omega_t  
+</div>
+<script type="math/tex; mode=display">  
+\theta_{t,p} = p\cdot \omega_t  
+</script>
+</div>
+<p>注意力里关键是<strong>相位差</strong>：</p>
+<div class="arithmatex">
+<div class="MathJax_Preview">  
+\Delta\theta = (i-j)\omega_t  
+</div>
+<script type="math/tex; mode=display">  
+\Delta\theta = (i-j)\omega_t  
+</script>
+</div>
+<p>当你把位置 (p) 用到比训练时更大（比如训练到 4K，你推理到 32K），会发生两类 OOD（分布外）问题：</p>
+<p><strong>(A) 旋转太快 → “高频混乱”</strong></p>
+<p>高频维度（(\omega_t) 大）会让相位差 (\Delta\theta) 变化特别剧烈，远距离 token 的相对关系变得像“乱抖”，注意力很难稳定。YaRN 论文就明确讨论了“高频更敏感”的问题。 (<a href="https://arxiv.org/abs/2309.00071?utm_source=chatgpt.com" title="[2309.00071] YaRN: Efficient Context Window Extension of ...">arXiv</a>)</p>
+<p><strong>(B) 模型没见过这么大的相位 → 泛化失败</strong></p>
+<p>模型训练时只在 (p \le L_{\text{train}}) 的相位范围内学过模式，超过这个范围就等于在一个没见过的“角度分布”里工作。相关分析可参考 RoPE 外推 scaling laws 的工作。 (<a href="https://arxiv.org/html/2310.05209v2?utm_source=chatgpt.com" title="Scaling Laws of RoPE-based Extrapolation">arXiv</a>)</p>
+<p>所以：<strong>RoPE 的长上下文扩展，本质是在“怎么让相位在更长范围内仍然像训练时一样可用”。</strong></p>
+<hr />
+<h3 id="1-rope-scaling-position-interpolationpi">1) RoPE Scaling / Position Interpolation（PI）：最简单粗暴，但很有效</h3>
+<p>这是最经典的第一招：<strong>把位置缩小</strong>，让模型“以为”还在训练长度内。</p>
+<p>设你想把上下文从 (L) 扩到 (L' = sL)，那就把位置 index 压缩：</p>
+<div class="arithmatex">
+<div class="MathJax_Preview">  
+p' = p / s  
+\quad\Rightarrow\quad  
+\theta_{t,p} = (p/s)\omega_t  
+</div>
+<script type="math/tex; mode=display">  
+p' = p / s  
+\quad\Rightarrow\quad  
+\theta_{t,p} = (p/s)\omega_t  
+</script>
+</div>
+<p>也就是说：<strong>把所有频率的角速度都统一变慢 (s) 倍</strong>。</p>
+<p>✅ 优点</p>
+<ul>
+<li>
+<p>0 训练/0 微调就能把可用长度拉长（很多开源推理直接这么做）</p>
+</li>
+<li>
+<p>实现极其简单（只改 RoPE 的 position ids / 或等效改角度）</p>
+</li>
+</ul>
+<p>❌ 缺点（关键！）</p>
+<ul>
+<li>
+<p>你把<strong>所有频率</strong>都压慢了，等于“局部位置分辨率”也被压扁<br />
+    → 近距离（例如 1~20 token）的精细结构会变差</p>
+</li>
+<li>
+<p>当 scaling factor 很大时（比如 8x、16x），效果明显下降（YaRN 里也提到 naive scaling 会早早退化）。 (<a href="https://proceedings.iclr.cc/paper_files/paper/2024/file/874a4d89f2d04b4bcf9a2c19545cf040-Paper-Conference.pdf?utm_source=chatgpt.com" title="YARN: EFFICIENT CONTEXT WINDOW EXTENSION OF ...">ICLR 会议录</a>)</p>
+</li>
+</ul>
+<blockquote>
+<p>直觉：PI 像把整张“位置尺子”拉伸，远距离能看见了，但近距离刻度变粗了。</p>
+</blockquote>
+<hr />
+<h3 id="2-ntk-aware-scaling">2) NTK-aware scaling：关键改进——<strong>别一刀切，按频率分配“压缩压力”</strong></h3>
+<p>社区发现 PI 的主要问题来自<strong>高频维度太敏感</strong>，所以就有了 NTK-aware 思路：</p>
+<blockquote>
+<p><strong>低频可以多压缩（它负责长程），高频少压缩（它负责短程细节）。</strong></p>
+</blockquote>
+<p>YaRN 论文把这类方法作为重要前置工作讨论：不是把所有维度统一缩放，而是“spread out interpolation pressure across multiple dimensions”。 (<a href="https://proceedings.iclr.cc/paper_files/paper/2024/file/874a4d89f2d04b4bcf9a2c19545cf040-Paper-Conference.pdf?utm_source=chatgpt.com" title="YARN: EFFICIENT CONTEXT WINDOW EXTENSION OF ...">ICLR 会议录</a>)</p>
+<p>你可以把它理解成一个频率相关的缩放函数：</p>
+<div class="arithmatex">
+<div class="MathJax_Preview">  
+\theta_{t,p} = p \cdot \omega_t'  
+\quad \text{其中 }\omega_t' \text{是按} \omega_t \text{重新映射的}  
+</div>
+<script type="math/tex; mode=display">  
+\theta_{t,p} = p \cdot \omega_t'  
+\quad \text{其中 }\omega_t' \text{是按} \omega_t \text{重新映射的}  
+</script>
+</div>
+<p>✅ 优点</p>
+<ul>
+<li>
+<p>仍可做到 <strong>0 微调扩展</strong>（经常被用作“开箱即用长上下文”）</p>
+</li>
+<li>
+<p>相比 PI，短程能力掉得少、长程更稳</p>
+</li>
+</ul>
+<p>❌ 缺点</p>
+<ul>
+<li>
+<p>它不是严格“无损”的：只是在 trade-off 上更聪明</p>
+</li>
+<li>
+<p>不同模型/不同目标长度需要调参（实现细节也有多个版本）</p>
+</li>
+</ul>
+<p>参考：这条线最早在社区里很流行（例如 bloc97 的 NTK-aware scaled RoPE 讨论），YaRN 也系统总结了这类思路。 (<a href="https://proceedings.iclr.cc/paper_files/paper/2024/file/874a4d89f2d04b4bcf9a2c19545cf040-Paper-Conference.pdf?utm_source=chatgpt.com" title="YARN: EFFICIENT CONTEXT WINDOW EXTENSION OF ...">ICLR 会议录</a>)</p>
+<hr />
+<h3 id="3-yarn">3) YaRN：把“频率分治”做成系统方案，并提供高效微调策略</h3>
+<p><strong>YaRN（ICLR 2024）</strong> 是第一批把这些经验“论文级整理+给出有效 recipe”的方法之一。它的主张很明确：</p>
+<ul>
+<li>
+<p>RoPE 外推时，不同频率应该用不同策略</p>
+</li>
+<li>
+<p><strong>高频</strong>更影响局部结构，不要被压得太狠</p>
+</li>
+<li>
+<p><strong>低频</strong>承载长程外推，可以承担更多“插值压力”</p>
+</li>
+<li>
+<p>并且它强调：用<strong>更少 tokens/更少 steps 的微调</strong>就能把窗口扩得很大（相比以前方法训练成本显著更低）。 (<a href="https://arxiv.org/abs/2309.00071?utm_source=chatgpt.com" title="[2309.00071] YaRN: Efficient Context Window Extension of ...">arXiv</a>)</p>
+</li>
+</ul>
+<p>✅ 优点</p>
+<ul>
+<li>
+<p><strong>效果通常比纯 PI/纯 NTK-aware 更好、更稳</strong></p>
+</li>
+<li>
+<p>论文给了比较完整的工程路径（怎么扩、怎么训、怎么保短文本能力）</p>
+</li>
+<li>
+<p>训练成本比很多 earlier 方法低（paper 强调 10x less tokens、2.5x less steps）。 (<a href="https://arxiv.org/abs/2309.00071?utm_source=chatgpt.com" title="[2309.00071] YaRN: Efficient Context Window Extension of ...">arXiv</a>)</p>
+</li>
+</ul>
+<p>❌ 缺点</p>
+<ul>
+<li>最佳效果一般还是需要微调（尽管比别人省）</li>
+</ul>
+<blockquote>
+<p>直觉：YaRN 的核心是“别用一把尺子量所有距离”，而是让不同频率各司其职。</p>
+</blockquote>
+<hr />
+<h3 id="4-longrope-256k2m">4) LongRoPE：把窗口推到 256K~2M 的“工程级”方案（少量微调）</h3>
+<p><strong>LongRoPE</strong> 的定位更像“我要非常长：256K / 2M”，因此它必须更激进、也更工程化。</p>
+<p>它的亮点是：</p>
+<ul>
+<li>
+<p>用相对少的微调步数（文中提到最多约 1k steps、训练长度到 256K）</p>
+</li>
+<li>
+<p>把预训练 LLM 的窗口扩到非常夸张的量级（论文写到 2048K tokens）</p>
+</li>
+<li>
+<p>同时尽量保持原本短上下文能力。 (<a href="https://arxiv.org/abs/2402.13753?utm_source=chatgpt.com" title="[2402.13753] LongRoPE: Extending LLM Context Window ...">arXiv</a>)<br />
+    并且有官方开源实现仓库。 (<a href="https://github.com/microsoft/LongRoPE?utm_source=chatgpt.com" title="microsoft/LongRoPE">GitHub</a>)</p>
+</li>
+</ul>
+<p>✅ 优点</p>
+<ul>
+<li>
+<p>目前公开论文里属于“能把 RoPE 推到超长”的代表工作之一</p>
+</li>
+<li>
+<p>训练成本相对“2M 目标”来说已经很夸张地省</p>
+</li>
+</ul>
+<p>❌ 缺点</p>
+<ul>
+<li>
+<p>你要付出<strong>至少一点微调成本</strong></p>
+</li>
+<li>
+<p>工程复杂度更高（数据构造、训练 schedule、稳定性）</p>
+</li>
+</ul>
+<blockquote>
+<p>直觉：LongRoPE 不只是改个公式，它是在“系统地让模型适应超长相位分布”。</p>
+</blockquote>
+<hr />
+<h3 id="6-rope_1">6) 一个很关键但经常被忽略的点：长上下文不是只改 RoPE</h3>
+<p>哪怕 RoPE 完美外推了，你仍可能遇到：</p>
+<ul>
+<li>
+<p>attention 数值稳定性（softmax、精度）</p>
+</li>
+<li>
+<p>KV cache / memory</p>
+</li>
+<li>
+<p>训练数据分布（模型没学过“长文档组织结构”）</p>
+</li>
+</ul>
+<p>所以 RoPE scaling 是必要条件，但不总是充分条件。</p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": [], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+        <script src="https://cdn.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+      
+        <script src="../../assets/javascripts/collapse.js"></script>
+      
+    
+  </body>
+</html>

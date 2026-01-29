@@ -1,0 +1,28 @@
+/* 鼠标悬停在标题上时背景微亮 */
+.collapsible-header:hover {
+    background-color: rgba(0, 0, 0, 0.02);
+    border-radius: 4px;
+}
+
+.collapsible-header.flash-target {
+    animation: header-flash 1.2s ease-out;
+    border-radius: 4px;
+}
+
+@keyframes header-flash {
+    0% {
+        background-color: rgba(255, 214, 0, 0.35);
+    }
+    60% {
+        background-color: rgba(255, 214, 0, 0.2);
+    }
+    100% {
+        background-color: transparent;
+    }
+}
+
+/* 隐藏时平滑过渡的提示（可选）（目前使用起来感觉没用） */
+.collapse-icon {
+    color: var(--md-typeset-color);
+    opacity: 0.5;
+}

@@ -1,0 +1,2857 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+        <link rel="canonical" href="https://ray-lei-17.github.io/LearnAI-with-Ray/Math/RL%20for%20LLM/">
+      
+      
+        <link rel="prev" href="../Metrics/">
+      
+      
+        <link rel="next" href="../ROPE/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.1">
+    
+    
+      
+        <title>RL for LLM - LearnAI-with-Ray</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.484c7ddc.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/extra.css">
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    <body dir="ltr">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#_1" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="LearnAI-with-Ray" class="md-header__button md-logo" aria-label="LearnAI-with-Ray" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            LearnAI-with-Ray
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              RL for LLM
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="LearnAI-with-Ray" class="md-nav__button md-logo" aria-label="LearnAI-with-Ray" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    LearnAI-with-Ray
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Conference
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Conference
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../Conference/Survey/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Survey
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Domain
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Domain
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../Domain/MLLM/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Multimodal LLM
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../Domain/MMEB-Retrieval/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    MMEB Retrieval
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../Domain/Quantization/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    量化
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../Domain/RAG/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    RAG
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Math
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Math
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Arch/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Arch
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../DPO/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    DPO
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Metrics/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Metrics
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    RL for LLM
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    RL for LLM
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        强化学习的基础概念
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="强化学习的基础概念">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        基本要素
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        强化学习的目标：最大化总奖励
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#reward-vs-value-function" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Reward v.s. Value function
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#qpis_ta_tqpis_ta_t" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        动作价值函数Q^\pi(s_t,a_t)Q^\pi(s_t,a_t)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_4" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        强化学习方法分类
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="强化学习方法分类">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#value-based" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Value-based
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Value-based">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#td-temporal-difference" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        TD, Temporal Difference 时序差分
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#monte-carlo" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Monte Carlo 蒙特卡洛
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#policy-based" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Policy-based
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Policy-based">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#reinforce" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        REINFORCE
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#mixed" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Mixed
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Mixed">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#actorcritic" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Actor–Critic
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Actor–Critic">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#advantage" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Advantage 优势函数
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ppo" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        PPO
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="PPO">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#r_tthetafracpi_olda_ts_t_pia_ts_tr_tthetafracpi_olda_ts_t_pia_ts_t" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        重要性采样r_t​(\theta)=\frac{\pi_{old​}(a_t,​s_t​)}{π_\pi​(a_t​,s_t​)}​r_t​(\theta)=\frac{\pi_{old​}(a_t,​s_t​)}{π_\pi​(a_t​,s_t​)}​
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="重要性采样r_t​(\theta)=\frac{\pi_{old​}(a_t,​s_t​)}{π_\pi​(a_t​,s_t​)}​r_t​(\theta)=\frac{\pi_{old​}(a_t,​s_t​)}{π_\pi​(a_t​,s_t​)}​">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_5" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        原始解释
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_6" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        解释更新
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="解释更新">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#on-policy-vs-off-policy" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        on-policy v.s. off-policy
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_7" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        核心公式
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_8" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        轮次的概念
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_9" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        整理
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="整理">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#reinforce-actor-critic-importance-sampling-ppo" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        REINFORCE → Actor-Critic → Importance sampling → PPO
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#reinforce-vs-ppo" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        REINFORCE v.s. PPO
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#rl-for-llm" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        RL for LLM
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="RL for LLM">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#ppo_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        PPO
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dpo" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        DPO
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#grpo" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        GRPO
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="GRPO">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#dpo_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        与DPO的联系与区别
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#leave-one-out-strategy" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        leave-one-out strategy
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dapo" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        DAPO
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="DAPO">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_10" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        公式
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="公式">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_11" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        几个关键部分
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#grpo_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        相比GRPO的改进点
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dupo" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        DUPO
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="DUPO">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_12" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        原文
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#gpt" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        GPT回答
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#gspo" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        GSPO
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="GSPO">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_13" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        回答
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_14" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        序列级别
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_15" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        总结对比
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ROPE/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ROPE
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Residual/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Residual
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Personal Development
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Personal Development
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../Personal%20Development/GPT%E4%BE%9D%E8%B5%96/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    GPT依赖
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../Personal%20Development/%E5%85%8B%E6%9C%8D%E5%AE%8C%E7%BE%8E%E4%B8%BB%E4%B9%89/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    克服完美主义
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../Personal%20Development/%E9%A6%99%E8%95%89%E8%B6%8A%E5%A4%A7%EF%BC%8C%E9%A6%99%E8%95%89%E7%9A%AE%E8%B6%8A%E5%A4%A7/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    香蕉越大，香蕉皮越大
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Tool
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Tool
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../Tool/LLMRepo/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Very Useful Repo about LLM
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../Tool/Mac%20App/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Mac App
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../Tool/Mac-HiDPI/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Mac开启HiDPI
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../Tool/Obsidian-MkDocs/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Obsidian MkDocs
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../Tool/Vscode-Tunnel/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    VS Code Tunnel
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../Tool/args-kwargs/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    *args vs. **kwargs
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../Tool/git/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Git
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../Tool/python%E7%B1%BB%E8%A3%85%E9%A5%B0%E5%99%A8/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Python类装饰器
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../Tool/wandb/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Wandb使用
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../Tool/%E5%BE%AE%E4%BF%A1%E8%A7%86%E9%A2%91%E5%8F%B7%E4%B8%8B%E8%BD%BD/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    微信视频号下载
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../Tool/%E6%8A%BD%E8%B1%A1/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    什么时候需要代码抽象？
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        强化学习的基础概念
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="强化学习的基础概念">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        基本要素
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        强化学习的目标：最大化总奖励
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#reward-vs-value-function" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Reward v.s. Value function
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#qpis_ta_tqpis_ta_t" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        动作价值函数Q^\pi(s_t,a_t)Q^\pi(s_t,a_t)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_4" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        强化学习方法分类
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="强化学习方法分类">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#value-based" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Value-based
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Value-based">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#td-temporal-difference" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        TD, Temporal Difference 时序差分
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#monte-carlo" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Monte Carlo 蒙特卡洛
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#policy-based" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Policy-based
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Policy-based">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#reinforce" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        REINFORCE
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#mixed" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Mixed
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Mixed">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#actorcritic" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Actor–Critic
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Actor–Critic">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#advantage" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Advantage 优势函数
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ppo" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        PPO
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="PPO">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#r_tthetafracpi_olda_ts_t_pia_ts_tr_tthetafracpi_olda_ts_t_pia_ts_t" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        重要性采样r_t​(\theta)=\frac{\pi_{old​}(a_t,​s_t​)}{π_\pi​(a_t​,s_t​)}​r_t​(\theta)=\frac{\pi_{old​}(a_t,​s_t​)}{π_\pi​(a_t​,s_t​)}​
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="重要性采样r_t​(\theta)=\frac{\pi_{old​}(a_t,​s_t​)}{π_\pi​(a_t​,s_t​)}​r_t​(\theta)=\frac{\pi_{old​}(a_t,​s_t​)}{π_\pi​(a_t​,s_t​)}​">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_5" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        原始解释
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_6" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        解释更新
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="解释更新">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#on-policy-vs-off-policy" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        on-policy v.s. off-policy
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_7" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        核心公式
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_8" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        轮次的概念
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_9" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        整理
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="整理">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#reinforce-actor-critic-importance-sampling-ppo" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        REINFORCE → Actor-Critic → Importance sampling → PPO
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#reinforce-vs-ppo" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        REINFORCE v.s. PPO
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#rl-for-llm" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        RL for LLM
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="RL for LLM">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#ppo_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        PPO
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dpo" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        DPO
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#grpo" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        GRPO
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="GRPO">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#dpo_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        与DPO的联系与区别
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#leave-one-out-strategy" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        leave-one-out strategy
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dapo" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        DAPO
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="DAPO">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_10" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        公式
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="公式">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_11" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        几个关键部分
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#grpo_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        相比GRPO的改进点
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dupo" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        DUPO
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="DUPO">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_12" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        原文
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#gpt" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        GPT回答
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#gspo" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        GSPO
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="GSPO">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_13" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        回答
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_14" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        序列级别
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_15" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        总结对比
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+
+<p>最近强化学习在大语言模型的训练当中起到了非常重要的作用，也显示出了很强大的效果，但是很多时候文章介绍只是放一个公式，具体的方法就不介绍了，很难懂，最近向GPT老师请教后，有了初步的概念，尝试进行一个整理，对于我自己也是一个梳理，也希望提供给有需要快速了解的人。</p>
+<h2 id="_1">强化学习的基础概念</h2>
+<p>强化学习是让一个“智能体”（agent）在某个“环境”（environment）里学会做决策的过程。</p>
+<blockquote>
+<p>简单说：<strong>Agent 与环境交互，得到反馈（奖励），并学习如何获得更多奖励。</strong></p>
+</blockquote>
+<p>比如：
+- 下围棋的 AI（环境是棋盘，动作是落子）
+- 自动驾驶的算法（环境是道路，动作是转向/加速）
+- LLM 的 RLHF 阶段（环境是对话上下文，动作是生成下一个 token）</p>
+<h3 id="_2">基本要素</h3>
+<table>
+<thead>
+<tr>
+<th>名称</th>
+<th>含义</th>
+<th>举例（对话场景）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>状态（State, <span class="arithmatex"><span class="MathJax_Preview">s_t</span><script type="math/tex">s_t</script></span>)</td>
+<td>当前情境</td>
+<td>用户输入的 prompt</td>
+</tr>
+<tr>
+<td>动作（Action, <span class="arithmatex"><span class="MathJax_Preview">a_t</span><script type="math/tex">a_t</script></span>)</td>
+<td>Agent 的行为</td>
+<td>模型输出的一个 token</td>
+</tr>
+<tr>
+<td>策略（Policy, <span class="arithmatex"><span class="MathJax_Preview">\pi(a,s)</span><script type="math/tex">\pi(a,s)</script></span>)</td>
+<td>Agent 选择动作的规则</td>
+<td>在状态下采取各动作的概率分布</td>
+</tr>
+<tr>
+<td>奖励（Reward, <span class="arithmatex"><span class="MathJax_Preview">r_t</span><script type="math/tex">r_t</script></span>)</td>
+<td>环境给出的反馈信号</td>
+<td>用户是否喜欢这段回答</td>
+</tr>
+<tr>
+<td>价值函数（Value function, <span class="arithmatex"><span class="MathJax_Preview">V(s)</span><script type="math/tex">V(s)</script></span>)</td>
+<td>状态的“未来收益”期望</td>
+<td>从当前上下文继续写下去，最终能获得多好的奖励</td>
+</tr>
+<tr>
+<td>折扣因子（Discount, <span class="arithmatex"><span class="MathJax_Preview">\gamma</span><script type="math/tex">\gamma</script></span>)</td>
+<td>衡量未来奖励的重要性</td>
+<td>通常 &lt; 1，用来让长期奖励不会无限叠加</td>
+</tr>
+</tbody>
+</table>
+<h3 id="_3">强化学习的目标：最大化总奖励</h3>
+<p><img alt="Pasted image 20251013112709.png" src="../../assets/images/Pasted%20image%2020251013112709.png" />
+在这个公式中的折扣因子不会影响最优策略，但是使用折扣因子会让训练变得更加稳定。</p>
+<h3 id="reward-vs-value-function">Reward v.s. Value function</h3>
+<p>在上面的基础概念当中，我们会发现两个很相似的概念，“奖励”和“价值函数”，理清楚这两个概念有助于我们后面的理解，GPT老师是如下解释的：
+<img alt="Pasted image 20251013115400.png" src="../../assets/images/Pasted%20image%2020251013115400.png" />
+<img alt="Pasted image 20251013115431.png" src="../../assets/images/Pasted%20image%2020251013115431.png" />
+<img alt="Pasted image 20251013115503.png" src="../../assets/images/Pasted%20image%2020251013115503.png" />
+<img alt="Pasted image 20251013115522.png" src="../../assets/images/Pasted%20image%2020251013115522.png" /></p>
+<h3 id="qpis_ta_tqpis_ta_t">动作价值函数<span class="arithmatex"><span class="MathJax_Preview">Q^\pi(s_t,a_t)</span><script type="math/tex">Q^\pi(s_t,a_t)</script></span></h3>
+<p>从GPT老师的讲解中，我们除了厘清奖励告诉你“现在做得怎么样”和价值告诉你“未来还能多好”之外，我们还会关注到有两个核心函数：“状态价值函数”和“动作价值函数”，关于状态价值函数我们已经进行了一定的了解，然而这个动作价值函数，我们还尚未了解，我对动作价值函数进行了进一步的了解
+<img alt="Pasted image 20251013120819.png" src="../../assets/images/Pasted%20image%2020251013120819.png" />
+<img alt="Pasted image 20251013120851.png" src="../../assets/images/Pasted%20image%2020251013120851.png" />
+<img alt="Pasted image 20251013120914.png" src="../../assets/images/Pasted%20image%2020251013120914.png" />
+<img alt="Pasted image 20251013120932.png" src="../../assets/images/Pasted%20image%2020251013120932.png" />
+<img alt="Pasted image 20251013120947.png" src="../../assets/images/Pasted%20image%2020251013120947.png" /></p>
+<h1 id="_4">强化学习方法分类</h1>
+<p>至此我们已经基本完成了所有基础要素概念的引入，接下来我们将对强化学习的方法进行了解。正如上一章GPT老师所说，由这些基础衍生出来了两种类型的强化学习方法：Value-based方法和Policy-based方法。现在目前LLM使用的方法基本是Policy-based的，但是进行基础的介绍有益于总体的理解，所以我们下面对于各个类型的方法都进行一下基本的介绍。</p>
+<h2 id="value-based">Value-based</h2>
+<p><img alt="Pasted image 20251013161306.png" src="../../assets/images/Pasted%20image%2020251013161306.png" />
+正如前序所说，value-based方法不直接对于策略进行学习，而是对于这个动作价值函数进行学习。而智能体进行动作的时候，直接只用greedy的方式进行动作的选择。
+<img alt="Pasted image 20251013171203.png" src="../../assets/images/Pasted%20image%2020251013171203.png" />
+对于函数的更新，我们给出两种方法的例子，一个是TD，一个是Monte Carlo，它们两个一个很大的区别是TD是每走一步都能进行更新，而Monte Carlo是在一个episode结束获得一整个轨迹之后再进行更新。</p>
+<h4 id="td-temporal-difference">TD, Temporal Difference 时序差分</h4>
+<p>时序差分的关键概念在于，我们每走一步之前我们会利用价值状态函数或者动作状态函数对于未来的奖励有一个估计，而每次我们实际走了这步之后我们会获得实际上的奖励，于是就产生了一个时序差分的误差，我们就通过这个差值对我们的函数进行更新。
+<img alt="Pasted image 20251013175339.png" src="../../assets/images/Pasted%20image%2020251013175339.png" />
+<img alt="Pasted image 20251013175403.png" src="../../assets/images/Pasted%20image%2020251013175403.png" />
+看懂了这个流程，大概就理解了时序差分的核心。下面进行一些简单的扩展，没有需要的话可以跳过就行了，不影响后面内容的理解。
+<img alt="Pasted image 20251013175955.png" src="../../assets/images/Pasted%20image%2020251013175955.png" />
+<img alt="Pasted image 20251013180101.png" src="../../assets/images/Pasted%20image%2020251013180101.png" /></p>
+<blockquote>
+<p><strong>例子</strong>
+<img alt="Pasted image 20251013214633.png" src="../../assets/images/Pasted%20image%2020251013214633.png" /><img alt="Pasted image 20251013214657.png" src="../../assets/images/Pasted%20image%2020251013214657.png" /><img alt="Pasted image 20251013214716.png" src="../../assets/images/Pasted%20image%2020251013214716.png" /><img alt="Pasted image 20251013214733.png" src="../../assets/images/Pasted%20image%2020251013214733.png" /><img alt="Pasted image 20251013214748.png" src="../../assets/images/Pasted%20image%2020251013214748.png" /></p>
+</blockquote>
+<h4 id="monte-carlo">Monte Carlo 蒙特卡洛</h4>
+<p>而Monte Carlo正如我们刚刚所说，是得到完整的轨迹之后再进行更新的。
+<img alt="Pasted image 20251013180356.png" src="../../assets/images/Pasted%20image%2020251013180356.png" />
+<img alt="Pasted image 20251013180417.png" src="../../assets/images/Pasted%20image%2020251013180417.png" />
+<img alt="Pasted image 20251013180431.png" src="../../assets/images/Pasted%20image%2020251013180431.png" /></p>
+<blockquote>
+<p><strong>例子</strong>
+<img alt="Pasted image 20251013214943.png" src="../../assets/images/Pasted%20image%2020251013214943.png" /><img alt="Pasted image 20251013215008.png" src="../../assets/images/Pasted%20image%2020251013215008.png" /><img alt="Pasted image 20251013215037.png" src="../../assets/images/Pasted%20image%2020251013215037.png" /><img alt="Pasted image 20251013215055.png" src="../../assets/images/Pasted%20image%2020251013215055.png" /></p>
+</blockquote>
+<h2 id="policy-based">Policy-based</h2>
+<p>介绍完了value-based，我们回到policy-based的内容上，与value-based不一样的是，policy-based的关注点在于策略的直接学习，最后直接得到一个用于执行的策略。</p>
+<h3 id="reinforce">REINFORCE</h3>
+<p>我们再回到强化学习的目标：
+<img alt="Pasted image 20251013211051.png" src="../../assets/images/Pasted%20image%2020251013211051.png" />
+REINFORCE针对这个累计奖励的概率直接计算梯度进行更新
+<img alt="Pasted image 20251013211144.png" src="../../assets/images/Pasted%20image%2020251013211144.png" />
+<img alt="Pasted image 20251013210050.png" src="../../assets/images/Pasted%20image%2020251013210050.png" />
+<img alt="Pasted image 20251013210132.png" src="../../assets/images/Pasted%20image%2020251013210132.png" />
+稍微强调一下回报<span class="arithmatex"><span class="MathJax_Preview">G_t</span><script type="math/tex">G_t</script></span>和策略目标函数 <span class="arithmatex"><span class="MathJax_Preview">J(\theta)</span><script type="math/tex">J(\theta)</script></span>之间的区别
+<img alt="Pasted image 20251013212234.png" src="../../assets/images/Pasted%20image%2020251013212234.png" />
+<img alt="Pasted image 20251013212315.png" src="../../assets/images/Pasted%20image%2020251013212315.png" /></p>
+<blockquote>
+<p><strong>例子</strong>
+<img alt="Pasted image 20251013232142.png" src="../../assets/images/Pasted%20image%2020251013232142.png" /><img alt="Pasted image 20251013232218.png" src="../../assets/images/Pasted%20image%2020251013232218.png" /><img alt="Pasted image 20251013232239.png" src="../../assets/images/Pasted%20image%2020251013232239.png" /><img alt="Pasted image 20251013232257.png" src="../../assets/images/Pasted%20image%2020251013232257.png" /></p>
+</blockquote>
+<h2 id="mixed">Mixed</h2>
+<p>由于前述所说的REINFORCE的框架的缺点，所以将前面policy-based中的概念以价值网络critic的形式引入训练，来提供更平滑的信号。</p>
+<h3 id="actorcritic">Actor–Critic</h3>
+<p><img alt="Pasted image 20251013225052.png" src="../../assets/images/Pasted%20image%2020251013225052.png" />
+<img alt="Pasted image 20251013225135.png" src="../../assets/images/Pasted%20image%2020251013225135.png" />
+在这个地方进行参数更新的时候，除了TD误差，在Actor网络更新的时候引入不同的优势函数进行该步动作与平均奖励的差异</p>
+<h4 id="advantage">Advantage 优势函数</h4>
+<p>优势函数通过“哪个动作比平均好”来决定梯度方向。如果只用 <span class="arithmatex"><span class="MathJax_Preview">Q(s,a)</span><script type="math/tex">Q(s,a)</script></span>，那不同状态下的奖励尺度差别很大，梯度会非常 noisy。引入 V(s) 之后，你相当于在每个状态上都减去了一个 baseline，使得更新方向更稳定、更低方差。
+<img alt="Pasted image 20251013231447.png" src="../../assets/images/Pasted%20image%2020251013231447.png" />
+<img alt="Pasted image 20251013231507.png" src="../../assets/images/Pasted%20image%2020251013231507.png" />
+<img alt="Pasted image 20251013231530.png" src="../../assets/images/Pasted%20image%2020251013231530.png" />
+<img alt="Pasted image 20251013231552.png" src="../../assets/images/Pasted%20image%2020251013231552.png" />
+<img alt="Pasted image 20251013231609.png" src="../../assets/images/Pasted%20image%2020251013231609.png" /></p>
+<h3 id="ppo">PPO</h3>
+<p>针对<code>PPO</code>而言，其关键点在于更新<code>Actor</code>的时候使用的函数进行了改进。
+<img alt="Pasted image 20251013232026.png" src="../../assets/images/Pasted%20image%2020251013232026.png" />
+在PPO的公式中除了优势函数，又引入了一个新老策略的比值的概念，后面的clip就是对这个比值范围的限制，防止一次更新的步子过大。</p>
+<h4 id="r_tthetafracpi_olda_ts_t_pia_ts_tr_tthetafracpi_olda_ts_t_pia_ts_t">重要性采样<span class="arithmatex"><span class="MathJax_Preview">r_t​(\theta)=\frac{\pi_{old​}(a_t,​s_t​)}{π_\pi​(a_t​,s_t​)}​</span><script type="math/tex">r_t​(\theta)=\frac{\pi_{old​}(a_t,​s_t​)}{π_\pi​(a_t​,s_t​)}​</script></span></h4>
+<h5 id="_5">原始解释</h5>
+<p><img alt="Pasted image 20251013233329.png" src="../../assets/images/Pasted%20image%2020251013233329.png" />
+<img alt="Pasted image 20251013233348.png" src="../../assets/images/Pasted%20image%2020251013233348.png" />
+<img alt="Pasted image 20251013233420.png" src="../../assets/images/Pasted%20image%2020251013233420.png" /></p>
+<h5 id="_6">解释更新</h5>
+<p>上面的解释当时给了我一种错觉，<code>PPO</code>是一种<code>off-policy</code>的策略，但实际上<code>PPO</code>是一个<code>on-policy</code>的方法，或者说近似<code>on-policy</code>，虽然会迭代采样比较新的方法，但是中间还是会有一些轮次是在最近采样的轨迹上更新的，并不代表完全最新的策略，所以还是存在策略重要性比值</p>
+<p>下面讲讲<code>off-policy</code>和<code>on-policy</code>的方法的区别</p>
+<h6 id="on-policy-vs-off-policy"><code>on-policy</code> v.s. <code>off-policy</code></h6>
+<p><img alt="Pasted image 20251107104933.png" src="../../assets/images/Pasted%20image%2020251107104933.png" />
+<img alt="Pasted image 20251107104953.png" src="../../assets/images/Pasted%20image%2020251107104953.png" />
+<img alt="Pasted image 20251107105020.png" src="../../assets/images/Pasted%20image%2020251107105020.png" /></p>
+<p>上面能看到<code>on-policy</code>和<code>off-policy</code>的主要区别就在于用的数据是新还是旧，然后同时我们还可以有一个发现，就是<code>off-policy</code>的方法多是<code>value-based</code>的，而<code>on-policy</code>的多是<code>policy-based</code>的，GPT老师是这么给我解释的</p>
+<p><img alt="Pasted image 20251107110438.png" src="../../assets/images/Pasted%20image%2020251107110438.png" /></p>
+<table>
+<thead>
+<tr>
+<th>方法类型</th>
+<th>核心目标</th>
+<th>为什么倾向某种策略</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Value-based</strong></td>
+<td>学习 <span class="arithmatex"><span class="MathJax_Preview">Q(s, a) = \mathbb{E}[R\|a,s]</span><script type="math/tex">Q(s, a) = \mathbb{E}[R\|a,s]</script></span>的估计值</td>
+<td>因为 Q-learning 通过自举（bootstrapping）更新，目标动作来自当前策略，但数据可以来自任何策略，所以天然支持 <code>off-policy</code></td>
+</tr>
+<tr>
+<td><strong>Policy-based</strong></td>
+<td>直接学习策略 <span class="arithmatex"><span class="MathJax_Preview">\pi_\theta(a\|s)</span><script type="math/tex">\pi_\theta(a\|s)</script></span></td>
+<td>因为策略梯度的期望是基于当前策略分布计算的，必须用当前策略采样的数据，所以通常是 <code>on-policy</code>。</td>
+</tr>
+</tbody>
+</table>
+<p><img alt="Pasted image 20251107110509.png" src="../../assets/images/Pasted%20image%2020251107110509.png" /></p>
+<table>
+<thead>
+<tr>
+<th>算法</th>
+<th>类型</th>
+<th>On/Off Policy</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Q-learning / DQN</strong></td>
+<td>Value-based</td>
+<td>✅ Off-policy</td>
+<td>因为可以用经验回放</td>
+</tr>
+<tr>
+<td><strong>SARSA</strong></td>
+<td>Value-based</td>
+<td>✅ On-policy</td>
+<td>因为更新目标用的是当前策略的动作</td>
+</tr>
+<tr>
+<td><strong>REINFORCE</strong></td>
+<td>Policy-based</td>
+<td>✅ On-policy</td>
+<td>需要当前策略轨迹来估计梯度</td>
+</tr>
+<tr>
+<td><strong>A2C / A3C</strong></td>
+<td>Actor-Critic</td>
+<td>✅ On-policy</td>
+<td>策略梯度部分需要当前数据</td>
+</tr>
+<tr>
+<td><strong>DDPG / TD3 / SAC</strong></td>
+<td>Actor-Critic</td>
+<td>✅ Off-policy</td>
+<td>用 replay buffer，融合 value-based 思想</td>
+</tr>
+<tr>
+<td><strong>PPO / TRPO</strong></td>
+<td>Policy-based</td>
+<td>✅ On-policy（约束更新步长）</td>
+<td>限制策略变化太大时的 instability</td>
+</tr>
+</tbody>
+</table>
+<p><img alt="Pasted image 20251107110521.png" src="../../assets/images/Pasted%20image%2020251107110521.png" /></p>
+<h6 id="_7">核心公式</h6>
+<p><img alt="Pasted image 20251107110656.png" src="../../assets/images/Pasted%20image%2020251107110656.png" />
+<img alt="Pasted image 20251107110709.png" src="../../assets/images/Pasted%20image%2020251107110709.png" /></p>
+<h4 id="_8">轮次的概念</h4>
+<p>由于PPO是近似<code>on-policy</code>，让我对轮次的概念产生了疑惑，GPT老师的表述中每一轮PPO会重新采样一次数据
+<img alt="Pasted image 20251107111911.png" src="../../assets/images/Pasted%20image%2020251107111911.png" />
+<img alt="Pasted image 20251107111925.png" src="../../assets/images/Pasted%20image%2020251107111925.png" />
+<img alt="Pasted image 20251107111952.png" src="../../assets/images/Pasted%20image%2020251107111952.png" /></p>
+<h4 id="_9">整理</h4>
+<p>整体的思想我们已经了解，我们再把上面的内容按照执行的步骤进行一些重新的整理：
+<img alt="Pasted image 20251014115111.png" src="../../assets/images/Pasted%20image%2020251014115111.png" />
+<img alt="Pasted image 20251014115142.png" src="../../assets/images/Pasted%20image%2020251014115142.png" />
+<img alt="Pasted image 20251014115216.png" src="../../assets/images/Pasted%20image%2020251014115216.png" />
+<img alt="Pasted image 20251014115302.png" src="../../assets/images/Pasted%20image%2020251014115302.png" /></p>
+<h5 id="reinforce-actor-critic-importance-sampling-ppo">REINFORCE → Actor-Critic → Importance sampling → PPO</h5>
+<p><img alt="Pasted image 20251107111052.png" src="../../assets/images/Pasted%20image%2020251107111052.png" />
+<img alt="Pasted image 20251107111115.png" src="../../assets/images/Pasted%20image%2020251107111115.png" />
+<img alt="Pasted image 20251107111147.png" src="../../assets/images/Pasted%20image%2020251107111147.png" /></p>
+<h4 id="reinforce-vs-ppo">REINFORCE v.s. PPO</h4>
+<p>先看看REINFORCE的公式</p>
+<p><img alt="Pasted%20image%2020260114170717.png" src="../../assets/images/Pasted%20image%2020260114170717.png" width="400" /></p>
+<p>然后我们看看PPO的公式</p>
+<p><img alt="Pasted%20image%2020260114171219.png" src="../../assets/images/Pasted%20image%2020260114171219.png" width="600" /></p>
+<p>可以看到在REINFORCE里面有一个log，而PPO中没有，于是我找gpt老师问了一下，很有收获，总的来说，log的出现是为了将期望
+<img alt="Pasted image 20260114175106.png" src="../../assets/images/Pasted%20image%2020260114175106.png" />
+<img alt="Pasted image 20260114175554.png" src="../../assets/images/Pasted%20image%2020260114175554.png" />
+<img alt="Pasted image 20260114175713.png" src="../../assets/images/Pasted%20image%2020260114175713.png" />
+<img alt="Pasted image 20260114175943.png" src="../../assets/images/Pasted%20image%2020260114175943.png" />
+<img alt="Pasted image 20260114180021.png" src="../../assets/images/Pasted%20image%2020260114180021.png" />
+<img alt="Pasted image 20260114180102.png" src="../../assets/images/Pasted%20image%2020260114180102.png" />
+<img alt="Pasted image 20260114180121.png" src="../../assets/images/Pasted%20image%2020260114180121.png" />
+<img alt="Pasted image 20260114180218.png" src="../../assets/images/Pasted%20image%2020260114180218.png" />
+<img alt="Pasted image 20260114180238.png" src="../../assets/images/Pasted%20image%2020260114180238.png" />
+<img alt="Pasted image 20260114180303.png" src="../../assets/images/Pasted%20image%2020260114180303.png" />
+<img alt="Pasted image 20260114180340.png" src="../../assets/images/Pasted%20image%2020260114180340.png" />
+<img alt="Pasted image 20260114180503.png" src="../../assets/images/Pasted%20image%2020260114180503.png" />
+<img alt="Pasted image 20260114180531.png" src="../../assets/images/Pasted%20image%2020260114180531.png" />
+<img alt="Pasted image 20260114180559.png" src="../../assets/images/Pasted%20image%2020260114180559.png" />
+<img alt="Pasted image 20260114180625.png" src="../../assets/images/Pasted%20image%2020260114180625.png" /></p>
+<h1 id="rl-for-llm">RL for LLM</h1>
+<p>现在对于RL中的PPO算法有了一定的了解，那它又是如何用来训练大语言模型的呢？</p>
+<h2 id="ppo_1">PPO</h2>
+<p><img alt="Pasted image 20251014161206.png" src="../../assets/images/Pasted%20image%2020251014161206.png" />
+<img alt="Pasted image 20251014161313.png" src="../../assets/images/Pasted%20image%2020251014161313.png" />
+<img alt="Pasted image 20251014161333.png" src="../../assets/images/Pasted%20image%2020251014161333.png" />
+<img alt="Pasted image 20251014161413.png" src="../../assets/images/Pasted%20image%2020251014161413.png" />
+<img alt="Pasted image 20251014161502.png" src="../../assets/images/Pasted%20image%2020251014161502.png" />
+在这里我产生了一个一整个句子该如何更新的疑问
+<img alt="Pasted image 20251014161522.png" src="../../assets/images/Pasted%20image%2020251014161522.png" />
+<img alt="Pasted image 20251014161635.png" src="../../assets/images/Pasted%20image%2020251014161635.png" />
+<img alt="Pasted image 20251014161650.png" src="../../assets/images/Pasted%20image%2020251014161650.png" />
+<img alt="Pasted image 20251014161712.png" src="../../assets/images/Pasted%20image%2020251014161712.png" />
+<img alt="Pasted image 20251014161800.png" src="../../assets/images/Pasted%20image%2020251014161800.png" />
+<img alt="Pasted image 20251014161828.png" src="../../assets/images/Pasted%20image%2020251014161828.png" />
+GPT老师给出了一个伪代码如下
+<div class="highlight"><pre><span></span><code><span class="c1"># ------------------------------------------------------------</span>
+<span class="c1"># 初始化</span>
+<span class="c1"># ------------------------------------------------------------</span>
+<span class="n">policy</span> <span class="o">=</span> <span class="n">LLM</span><span class="p">()</span>                 <span class="c1"># 当前策略 πθ</span>
+<span class="n">old_policy</span> <span class="o">=</span> <span class="n">copy</span><span class="p">(</span><span class="n">policy</span><span class="p">)</span>      <span class="c1"># 旧策略 πθ_old，用于计算 ratio</span>
+<span class="n">value_net</span> <span class="o">=</span> <span class="n">ValueNetwork</span><span class="p">()</span>     <span class="c1"># 价值函数 Vϕ</span>
+<span class="n">reward_model</span> <span class="o">=</span> <span class="n">RewardModel</span><span class="p">()</span>   <span class="c1"># 奖励模型 Rψ</span>
+<span class="n">optimizer_policy</span> <span class="o">=</span> <span class="n">Adam</span><span class="p">(</span><span class="n">policy</span><span class="o">.</span><span class="n">parameters</span><span class="p">())</span>
+<span class="n">optimizer_value</span> <span class="o">=</span> <span class="n">Adam</span><span class="p">(</span><span class="n">value_net</span><span class="o">.</span><span class="n">parameters</span><span class="p">())</span>
+
+<span class="c1"># 超参数</span>
+<span class="n">gamma</span> <span class="o">=</span> <span class="mf">0.99</span>                   <span class="c1"># 折扣因子</span>
+<span class="n">lam</span> <span class="o">=</span> <span class="mf">0.95</span>                     <span class="c1"># GAE 参数</span>
+<span class="n">clip_eps</span> <span class="o">=</span> <span class="mf">0.2</span>                 <span class="c1"># PPO clip范围</span>
+<span class="n">K_epochs</span> <span class="o">=</span> <span class="mi">4</span>                   <span class="c1"># 每次采样后更新次数</span>
+
+<span class="c1"># ------------------------------------------------------------</span>
+<span class="c1"># 训练循环</span>
+<span class="c1"># ------------------------------------------------------------</span>
+<span class="k">for</span> <span class="n">iteration</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_iterations</span><span class="p">):</span>
+
+    <span class="c1"># === Step 1: 采样 ===</span>
+    <span class="n">batch_prompts</span> <span class="o">=</span> <span class="n">sample_prompts</span><span class="p">(</span><span class="n">batch_size</span><span class="p">)</span>
+
+    <span class="n">trajectories</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">prompt</span> <span class="ow">in</span> <span class="n">batch_prompts</span><span class="p">:</span>
+        <span class="c1"># 用旧策略生成回答（不更新梯度）</span>
+        <span class="k">with</span> <span class="n">torch</span><span class="o">.</span><span class="n">no_grad</span><span class="p">():</span>
+            <span class="n">response</span><span class="p">,</span> <span class="n">logprobs</span><span class="p">,</span> <span class="n">values</span> <span class="o">=</span> <span class="n">old_policy</span><span class="o">.</span><span class="n">generate_with_values</span><span class="p">(</span><span class="n">prompt</span><span class="p">)</span>
+            <span class="n">reward</span> <span class="o">=</span> <span class="n">reward_model</span><span class="o">.</span><span class="n">score</span><span class="p">(</span><span class="n">prompt</span><span class="p">,</span> <span class="n">response</span><span class="p">)</span>
+
+        <span class="n">trajectories</span><span class="o">.</span><span class="n">append</span><span class="p">({</span>
+            <span class="s2">&quot;prompt&quot;</span><span class="p">:</span> <span class="n">prompt</span><span class="p">,</span>
+            <span class="s2">&quot;response&quot;</span><span class="p">:</span> <span class="n">response</span><span class="p">,</span>
+            <span class="s2">&quot;logprobs&quot;</span><span class="p">:</span> <span class="n">logprobs</span><span class="p">,</span>   <span class="c1"># 每个token的 log π_old(a|s)</span>
+            <span class="s2">&quot;values&quot;</span><span class="p">:</span> <span class="n">values</span><span class="p">,</span>       <span class="c1"># 每个token的 Vϕ(s)</span>
+            <span class="s2">&quot;reward&quot;</span><span class="p">:</span> <span class="n">reward</span>        <span class="c1"># 句级奖励</span>
+        <span class="p">})</span>
+
+    <span class="c1"># === Step 2: 计算 Advantage ===</span>
+    <span class="c1"># 奖励是句级（整段），但要传播到每个token</span>
+    <span class="n">all_advantages</span><span class="p">,</span> <span class="n">all_returns</span> <span class="o">=</span> <span class="p">[],</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">traj</span> <span class="ow">in</span> <span class="n">trajectories</span><span class="p">:</span>
+        <span class="n">R</span> <span class="o">=</span> <span class="n">traj</span><span class="p">[</span><span class="s2">&quot;reward&quot;</span><span class="p">]</span>
+        <span class="n">values</span> <span class="o">=</span> <span class="n">traj</span><span class="p">[</span><span class="s2">&quot;values&quot;</span><span class="p">]</span>
+        <span class="c1"># 使用 GAE 估计每个时间步的优势</span>
+        <span class="n">advantages</span><span class="p">,</span> <span class="n">returns</span> <span class="o">=</span> <span class="n">compute_GAE</span><span class="p">(</span><span class="n">R</span><span class="p">,</span> <span class="n">values</span><span class="p">,</span> <span class="n">gamma</span><span class="p">,</span> <span class="n">lam</span><span class="p">)</span>
+        <span class="n">all_advantages</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">advantages</span><span class="p">)</span>
+        <span class="n">all_returns</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">returns</span><span class="p">)</span>
+
+    <span class="c1"># === Step 3: PPO 更新 ===</span>
+    <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">K_epochs</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">traj</span><span class="p">,</span> <span class="n">advantages</span><span class="p">,</span> <span class="n">returns</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">trajectories</span><span class="p">,</span> <span class="n">all_advantages</span><span class="p">,</span> <span class="n">all_returns</span><span class="p">):</span>
+            <span class="c1"># 当前策略的 logprob</span>
+            <span class="n">logprobs_new</span><span class="p">,</span> <span class="n">values_new</span> <span class="o">=</span> <span class="n">policy</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="n">traj</span><span class="p">[</span><span class="s2">&quot;prompt&quot;</span><span class="p">],</span> <span class="n">traj</span><span class="p">[</span><span class="s2">&quot;response&quot;</span><span class="p">])</span>
+
+            <span class="c1"># ratio: 新旧策略概率比</span>
+            <span class="n">ratio</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">logprobs_new</span> <span class="o">-</span> <span class="n">traj</span><span class="p">[</span><span class="s2">&quot;logprobs&quot;</span><span class="p">])</span>
+
+            <span class="c1"># PPO-Clip 损失</span>
+            <span class="n">surr1</span> <span class="o">=</span> <span class="n">ratio</span> <span class="o">*</span> <span class="n">advantages</span>
+            <span class="n">surr2</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">clamp</span><span class="p">(</span><span class="n">ratio</span><span class="p">,</span> <span class="mi">1</span><span class="o">-</span><span class="n">clip_eps</span><span class="p">,</span> <span class="mi">1</span><span class="o">+</span><span class="n">clip_eps</span><span class="p">)</span> <span class="o">*</span> <span class="n">advantages</span>
+            <span class="n">policy_loss</span> <span class="o">=</span> <span class="o">-</span><span class="n">torch</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">surr1</span><span class="p">,</span> <span class="n">surr2</span><span class="p">))</span>
+
+            <span class="c1"># Value loss</span>
+            <span class="n">value_loss</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">mean</span><span class="p">((</span><span class="n">returns</span> <span class="o">-</span> <span class="n">values_new</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span>
+
+            <span class="c1"># 总损失</span>
+            <span class="n">loss</span> <span class="o">=</span> <span class="n">policy_loss</span> <span class="o">+</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="n">value_loss</span>
+
+            <span class="n">optimizer_policy</span><span class="o">.</span><span class="n">zero_grad</span><span class="p">()</span>
+            <span class="n">optimizer_value</span><span class="o">.</span><span class="n">zero_grad</span><span class="p">()</span>
+            <span class="n">loss</span><span class="o">.</span><span class="n">backward</span><span class="p">()</span>
+            <span class="n">optimizer_policy</span><span class="o">.</span><span class="n">step</span><span class="p">()</span>
+            <span class="n">optimizer_value</span><span class="o">.</span><span class="n">step</span><span class="p">()</span>
+
+    <span class="c1"># === Step 4: 更新旧策略 ===</span>
+    <span class="n">old_policy</span><span class="o">.</span><span class="n">load_state_dict</span><span class="p">(</span><span class="n">policy</span><span class="o">.</span><span class="n">state_dict</span><span class="p">())</span>
+</code></pre></div></p>
+<p><img alt="Pasted image 20251014162059.png" src="../../assets/images/Pasted%20image%2020251014162059.png" />
+<img alt="Pasted image 20251014162114.png" src="../../assets/images/Pasted%20image%2020251014162114.png" />
+<img alt="Pasted image 20251014162132.png" src="../../assets/images/Pasted%20image%2020251014162132.png" /></p>
+<h2 id="dpo">DPO</h2>
+<p>参考资料：<a href="https://zhuanlan.zhihu.com/p/697757566"># 详细推导DPO算法</a>
+本站简单拆解：<a href="../DPO/">DPO</a></p>
+<p>简述：不再额外保留reward网络和价值网络，直接使用两两样本的对比来优化模型</p>
+<p>总体思路：利用Bradley-Terry建模关系，利用优化目标， 解出最优reward的闭式解，带入回Bradley-Terry公式中，得到loss的形式
+<img alt="Pasted image 20251014163043.png" src="../../assets/images/Pasted%20image%2020251014163043.png" />
+<img alt="Pasted image 20251014163103.png" src="../../assets/images/Pasted%20image%2020251014163103.png" />
+<img alt="Pasted image 20251014163148.png" src="../../assets/images/Pasted%20image%2020251014163148.png" />
+<img alt="Pasted image 20251014163242.png" src="../../assets/images/Pasted%20image%2020251014163242.png" />
+<img alt="Pasted image 20251014163256.png" src="../../assets/images/Pasted%20image%2020251014163256.png" /></p>
+<h2 id="grpo">GRPO</h2>
+<p>简述：<strong>组内成员之间的两两比较</strong>得出的<strong>相对胜率</strong>作为奖励信号
+<img alt="Pasted image 20251014162818.png" src="../../assets/images/Pasted%20image%2020251014162818.png" />
+如果前面的内容都能看懂的话，结合后面部分，这个图应当是很容易看懂了，我们先把两个公式晒出来
+<img alt="Pasted image 20260114161233.png" src="../../assets/images/Pasted%20image%2020260114161233.png" />
+<img alt="Pasted image 20260114161315.png" src="../../assets/images/Pasted%20image%2020260114161315.png" />
+<img alt="Pasted image 20260114161354.png" src="../../assets/images/Pasted%20image%2020260114161354.png" />
+<img alt="Pasted image 20260114161437.png" src="../../assets/images/Pasted%20image%2020260114161437.png" />
+<img alt="Pasted image 20260114161739.png" src="../../assets/images/Pasted%20image%2020260114161739.png" />
+<img alt="Pasted image 20260114161756.png" src="../../assets/images/Pasted%20image%2020260114161756.png" />
+<img alt="Pasted image 20260114161813.png" src="../../assets/images/Pasted%20image%2020260114161813.png" />
+然后我们直接转问DeepSeek：
+<img alt="Pasted image 20251014162258.png" src="../../assets/images/Pasted%20image%2020251014162258.png" />
+<img alt="Pasted image 20251014162349.png" src="../../assets/images/Pasted%20image%2020251014162349.png" />
+<img alt="Pasted image 20251014162411.png" src="../../assets/images/Pasted%20image%2020251014162411.png" />
+<img alt="Pasted image 20251014162433.png" src="../../assets/images/Pasted%20image%2020251014162433.png" />
+<img alt="Pasted image 20251014162450.png" src="../../assets/images/Pasted%20image%2020251014162450.png" /></p>
+<h3 id="dpo_1">与DPO的联系与区别</h3>
+<p><img alt="Pasted image 20251014162604.png" src="../../assets/images/Pasted%20image%2020251014162604.png" />
+<img alt="Pasted image 20251014162638.png" src="../../assets/images/Pasted%20image%2020251014162638.png" />
+<img alt="Pasted image 20251014162650.png" src="../../assets/images/Pasted%20image%2020251014162650.png" />
+<img alt="Pasted image 20251014162702.png" src="../../assets/images/Pasted%20image%2020251014162702.png" />
+<img alt="Pasted image 20251014162716.png" src="../../assets/images/Pasted%20image%2020251014162716.png" /></p>
+<h3 id="leave-one-out-strategy">leave-one-out strategy</h3>
+<p><code>leave-one-out strategy</code>是指在计算优势函数的时候，把自己这个样本摘出去，这样是为了减少计算时的方差，GPT老师解释如下</p>
+<p><img alt="Pasted image 20251107112340.png" src="../../assets/images/Pasted%20image%2020251107112340.png" />
+<img alt="Pasted image 20251107112431.png" src="../../assets/images/Pasted%20image%2020251107112431.png" />
+<img alt="Pasted image 20251107112441.png" src="../../assets/images/Pasted%20image%2020251107112441.png" /></p>
+<h2 id="dapo">DAPO</h2>
+<p>简述：把全对或者全错的样本删掉，因为梯度为0，根本不需要做计算更新</p>
+<p><img alt="Pasted image 20251107112617.png" src="../../assets/images/Pasted%20image%2020251107112617.png" />
+<img alt="Pasted image 20251107112638.png" src="../../assets/images/Pasted%20image%2020251107112638.png" /></p>
+<h5 id="_10">公式</h5>
+<p><img alt="Pasted image 20251107112719.png" src="../../assets/images/Pasted%20image%2020251107112719.png" /><img alt="Pasted image 20251107112936.png" src="../../assets/images/Pasted%20image%2020251107112936.png" /></p>
+<h6 id="_11">几个关键部分</h6>
+<p><img alt="Pasted image 20251107113907.png" src="../../assets/images/Pasted%20image%2020251107113907.png" /><img alt="Pasted image 20251107113931.png" src="../../assets/images/Pasted%20image%2020251107113931.png" /></p>
+<h5 id="grpo_1">相比GRPO的改进点</h5>
+<p><img alt="Pasted image 20251107114112.png" src="../../assets/images/Pasted%20image%2020251107114112.png" />
+<img alt="Pasted image 20251107114125.png" src="../../assets/images/Pasted%20image%2020251107114125.png" /></p>
+<h3 id="dupo">DUPO</h3>
+<p>tongyi的web sailor里面提供的方法，简述而言是吧DAPO里面去掉的样本用同batch中其他的样本填充来加快速度</p>
+<h6 id="_12">原文</h6>
+<p><img alt="Pasted image 20251107114539.png" src="../../assets/images/Pasted%20image%2020251107114539.png" /></p>
+<h6 id="gpt">GPT回答</h6>
+<p><img alt="Pasted image 20251107114637.png" src="../../assets/images/Pasted%20image%2020251107114637.png" />
+<img alt="Pasted image 20251107114654.png" src="../../assets/images/Pasted%20image%2020251107114654.png" />
+<img alt="Pasted image 20251107114711.png" src="../../assets/images/Pasted%20image%2020251107114711.png" />
+<img alt="Pasted image 20251107114747.png" src="../../assets/images/Pasted%20image%2020251107114747.png" />
+这个就是DAPO去除梯度为0的样本的公式
+<img alt="Pasted image 20251107114802.png" src="../../assets/images/Pasted%20image%2020251107114802.png" />
+<img alt="Pasted image 20251107114852.png" src="../../assets/images/Pasted%20image%2020251107114852.png" /></p>
+<h2 id="gspo">GSPO</h2>
+<p>简述：把重要性采样给换成基于组的
+<img alt="Pasted image 20251104213526.png" src="../../assets/images/Pasted%20image%2020251104213526.png" /></p>
+<h3 id="_13">回答</h3>
+<p><img alt="Pasted image 20251107115333.png" src="../../assets/images/Pasted%20image%2020251107115333.png" />
+<img alt="Pasted image 20251107115348.png" src="../../assets/images/Pasted%20image%2020251107115348.png" /></p>
+<h3 id="_14">序列级别</h3>
+<p><img alt="Pasted image 20251107115943.png" src="../../assets/images/Pasted%20image%2020251107115943.png" />
+<img alt="Pasted image 20251107115959.png" src="../../assets/images/Pasted%20image%2020251107115959.png" />
+<img alt="Pasted image 20251107120024.png" src="../../assets/images/Pasted%20image%2020251107120024.png" />
+<img alt="Pasted image 20251107120036.png" src="../../assets/images/Pasted%20image%2020251107120036.png" /></p>
+<h1 id="_15">总结对比</h1>
+<p><img alt="Pasted image 20251107114942.png" src="../../assets/images/Pasted%20image%2020251107114942.png" /></p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": [], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+        <script src="https://cdn.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+      
+        <script src="../../assets/javascripts/collapse.js"></script>
+      
+    
+  </body>
+</html>

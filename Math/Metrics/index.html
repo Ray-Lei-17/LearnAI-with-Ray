@@ -1,0 +1,2476 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+        <link rel="canonical" href="https://ray-lei-17.github.io/LearnAI-with-Ray/Math/Metrics/">
+      
+      
+        <link rel="prev" href="../DPO/">
+      
+      
+        <link rel="next" href="../RL%20for%20LLM/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.1">
+    
+    
+      
+        <title>Metrics - LearnAI-with-Ray</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.484c7ddc.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/extra.css">
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    <body dir="ltr">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#metrics-summary" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="LearnAI-with-Ray" class="md-header__button md-logo" aria-label="LearnAI-with-Ray" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            LearnAI-with-Ray
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Metrics
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="LearnAI-with-Ray" class="md-nav__button md-logo" aria-label="LearnAI-with-Ray" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    LearnAI-with-Ray
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Conference
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Conference
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../Conference/Survey/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Survey
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Domain
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Domain
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../Domain/MLLM/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Multimodal LLM
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../Domain/MMEB-Retrieval/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    MMEB Retrieval
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../Domain/Quantization/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    量化
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../Domain/RAG/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    RAG
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Math
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Math
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Arch/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Arch
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../DPO/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    DPO
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Metrics
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Metrics
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#metrics-summary" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Metrics summary
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Metrics summary">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#perplexity-ppl" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Perplexity (PPL)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Perplexity (PPL)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-ppl" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. PPL 的直观理解
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-ppl" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. 如何计算 PPL？
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2. 如何计算 PPL？">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        核心公式
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#cross-entropy" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        与交叉熵（Cross Entropy）的关系
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-ppl" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. PPL 的常见数值范围
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4-ppl" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. 使用 PPL 的注意事项
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#calibration" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Calibration
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Calibration">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-calibration" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. 什么是 Calibration（校准）？
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-ece-mce" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. ECE 和 MCE 是用来做什么的？
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2. ECE 和 MCE 是用来做什么的？">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#ece-expected-calibration-error" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ECE (Expected Calibration Error) 期望校准误差
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#mce-maximum-calibration-error" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        MCE (Maximum Calibration Error) 最大校准误差
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#reliability-diagram" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        📊 可视化工具：可靠性图（Reliability Diagram）
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ece-expected-calibration-error-mce-maximum-calibration-error" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ECE (Expected Calibration Error)和 MCE (Maximum Calibration Error)例子
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="ECE (Expected Calibration Error)和 MCE (Maximum Calibration Error)例子">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        步骤一：计算每个区间的指标
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="步骤一：计算每个区间的指标">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#b_2b_2-04-06" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        📊 区间 B_2B_2: (0.4, 0.6]
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#b_3b_3-06-10" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        📊 区间 B_3B_3: (0.6, 1.0]
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ece-expected-calibration-error_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        步骤二：计算 ECE (Expected Calibration Error)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#mce-maximum-calibration-error_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        步骤三：计算 MCE (Maximum Calibration Error)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        结论
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#hit-rate-hitk" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Hit Rate (Hit@k)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#precision" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Precision (精度/准确率)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#recall" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Recall (召回率)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#f1-score" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        F1-Score
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#mrr-mean-reciprocal-rank" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        MRR (Mean Reciprocal Rank，平均倒数排名)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#map-mean-average-precision" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        MAP (Mean Average Precision，平均准确率均值)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ndcg-normalized-discounted-cumulative-gain" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        NDCG (Normalized Discounted Cumulative Gain，归一化折损累计增益)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_4" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        指标间关系
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../RL%20for%20LLM/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    RL for LLM
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ROPE/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ROPE
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Residual/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Residual
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Personal Development
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Personal Development
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../Personal%20Development/GPT%E4%BE%9D%E8%B5%96/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    GPT依赖
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../Personal%20Development/%E5%85%8B%E6%9C%8D%E5%AE%8C%E7%BE%8E%E4%B8%BB%E4%B9%89/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    克服完美主义
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../Personal%20Development/%E9%A6%99%E8%95%89%E8%B6%8A%E5%A4%A7%EF%BC%8C%E9%A6%99%E8%95%89%E7%9A%AE%E8%B6%8A%E5%A4%A7/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    香蕉越大，香蕉皮越大
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Tool
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Tool
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../Tool/LLMRepo/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Very Useful Repo about LLM
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../Tool/Mac%20App/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Mac App
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../Tool/Mac-HiDPI/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Mac开启HiDPI
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../Tool/Obsidian-MkDocs/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Obsidian MkDocs
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../Tool/Vscode-Tunnel/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    VS Code Tunnel
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../Tool/args-kwargs/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    *args vs. **kwargs
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../Tool/git/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Git
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../Tool/python%E7%B1%BB%E8%A3%85%E9%A5%B0%E5%99%A8/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Python类装饰器
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../Tool/wandb/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Wandb使用
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../Tool/%E5%BE%AE%E4%BF%A1%E8%A7%86%E9%A2%91%E5%8F%B7%E4%B8%8B%E8%BD%BD/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    微信视频号下载
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../Tool/%E6%8A%BD%E8%B1%A1/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    什么时候需要代码抽象？
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#metrics-summary" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Metrics summary
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Metrics summary">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#perplexity-ppl" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Perplexity (PPL)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Perplexity (PPL)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-ppl" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. PPL 的直观理解
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-ppl" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. 如何计算 PPL？
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2. 如何计算 PPL？">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        核心公式
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#cross-entropy" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        与交叉熵（Cross Entropy）的关系
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-ppl" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. PPL 的常见数值范围
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4-ppl" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. 使用 PPL 的注意事项
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#calibration" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Calibration
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Calibration">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-calibration" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. 什么是 Calibration（校准）？
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-ece-mce" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. ECE 和 MCE 是用来做什么的？
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2. ECE 和 MCE 是用来做什么的？">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#ece-expected-calibration-error" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ECE (Expected Calibration Error) 期望校准误差
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#mce-maximum-calibration-error" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        MCE (Maximum Calibration Error) 最大校准误差
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#reliability-diagram" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        📊 可视化工具：可靠性图（Reliability Diagram）
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ece-expected-calibration-error-mce-maximum-calibration-error" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ECE (Expected Calibration Error)和 MCE (Maximum Calibration Error)例子
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="ECE (Expected Calibration Error)和 MCE (Maximum Calibration Error)例子">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        步骤一：计算每个区间的指标
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="步骤一：计算每个区间的指标">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#b_2b_2-04-06" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        📊 区间 B_2B_2: (0.4, 0.6]
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#b_3b_3-06-10" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        📊 区间 B_3B_3: (0.6, 1.0]
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ece-expected-calibration-error_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        步骤二：计算 ECE (Expected Calibration Error)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#mce-maximum-calibration-error_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        步骤三：计算 MCE (Maximum Calibration Error)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        结论
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#hit-rate-hitk" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Hit Rate (Hit@k)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#precision" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Precision (精度/准确率)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#recall" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Recall (召回率)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#f1-score" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        F1-Score
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#mrr-mean-reciprocal-rank" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        MRR (Mean Reciprocal Rank，平均倒数排名)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#map-mean-average-precision" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        MAP (Mean Average Precision，平均准确率均值)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ndcg-normalized-discounted-cumulative-gain" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        NDCG (Normalized Discounted Cumulative Gain，归一化折损累计增益)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_4" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        指标间关系
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+
+  <h1>Metrics</h1>
+
+<h2 id="metrics-summary">Metrics summary</h2>
+<h3 id="perplexity-ppl">Perplexity (PPL)</h3>
+<p><strong>PPL</strong> 是 <strong>Perplexity</strong>（困惑度）的缩写，是评价语言模型（Language Model, LM）好坏最常用的指标之一。</p>
+<p>简单来说，PPL 衡量的是模型在预测下一个词时的“困惑程度”。模型对文本序列的概率分布预测得越准确，它的“困惑”就越小，PPL 值也就越低。</p>
+<hr />
+<h4 id="1-ppl">1. PPL 的直观理解</h4>
+<p>你可以把 PPL 理解为模型在面对下一个词时的<strong>平均选择分支数</strong>：</p>
+<ul>
+<li>
+<p>如果一个模型的 PPL = 10，说明模型在预测下一个词时，相当于在 10 个等可能的词中做选择。</p>
+</li>
+<li>
+<p><strong>结论：</strong> PPL 值越低，说明模型生成的句子越流畅、越符合自然语言逻辑，模型的性能越好。</p>
+</li>
+</ul>
+<hr />
+<h4 id="2-ppl">2. 如何计算 PPL？</h4>
+<p>PPL 的计算基于句子出现的概率。假设我们有一个包含 <span class="arithmatex"><span class="MathJax_Preview">N</span><script type="math/tex">N</script></span> 个词的句子 <span class="arithmatex"><span class="MathJax_Preview">W = (w_1, w_2, ..., w_N)</span><script type="math/tex">W = (w_1, w_2, ..., w_N)</script></span>。</p>
+<h5 id="_1">核心公式</h5>
+<p>PPL 是句子概率倒数的几何平均值，公式如下：</p>
+<div class="arithmatex">
+<div class="MathJax_Preview">PPL(W) = P(w_1, w_2, ..., w_N)^{-\frac{1}{N}} = \sqrt[N]{\frac{1}{P(w_1, w_2, ..., w_N)}}</div>
+<script type="math/tex; mode=display">PPL(W) = P(w_1, w_2, ..., w_N)^{-\frac{1}{N}} = \sqrt[N]{\frac{1}{P(w_1, w_2, ..., w_N)}}</script>
+</div>
+<p>根据链式法则，句子的概率 <span class="arithmatex"><span class="MathJax_Preview">P(W)</span><script type="math/tex">P(W)</script></span> 可以拆解为：</p>
+<div class="arithmatex">
+<div class="MathJax_Preview">P(w_1, w_2, ..., w_N) = \prod_{i=1}^{N} P(w_i | w_1, w_2, ..., w_{i-1})</div>
+<script type="math/tex; mode=display">P(w_1, w_2, ..., w_N) = \prod_{i=1}^{N} P(w_i | w_1, w_2, ..., w_{i-1})</script>
+</div>
+<h5 id="cross-entropy">与交叉熵（Cross Entropy）的关系</h5>
+<p>在实际工程（如深度学习训练）中，我们通常不直接计算概率乘积（因为容易溢出），而是通过<strong>交叉熵损失（Cross Entropy Loss）</strong>来计算 PPL。这是最常用的计算方式：</p>
+<ol>
+<li>
+<p>计算平均交叉熵损失 <span class="arithmatex"><span class="MathJax_Preview">H(W)</span><script type="math/tex">H(W)</script></span>：</p>
+<div class="arithmatex">
+<div class="MathJax_Preview">H(W) = -\frac{1}{N} \sum_{i=1}^{N} \log P(w_i | w_{&lt;i})</div>
+<script type="math/tex; mode=display">H(W) = -\frac{1}{N} \sum_{i=1}^{N} \log P(w_i | w_{<i})</script>
+</div>
+</li>
+<li>
+<p>通过指数函数还原：</p>
+<div class="arithmatex">
+<div class="MathJax_Preview">PPL = e^{H(W)} \quad (\text{或 } 2^{H(W)} \text{，取决于对数底数})</div>
+<script type="math/tex; mode=display">PPL = e^{H(W)} \quad (\text{或 } 2^{H(W)} \text{，取决于对数底数})</script>
+</div>
+</li>
+</ol>
+<hr />
+<h4 id="3-ppl">3. PPL 的常见数值范围</h4>
+<ul>
+<li>
+<p><strong>完美预测：</strong> 如果模型每次都能以 100% 的概率猜对下一个词，PPL = 1。</p>
+</li>
+<li>
+<p><strong>随机预测：</strong> 如果词表大小为 <span class="arithmatex"><span class="MathJax_Preview">V</span><script type="math/tex">V</script></span>，模型完全靠盲猜，PPL = <span class="arithmatex"><span class="MathJax_Preview">V</span><script type="math/tex">V</script></span>（通常是几万甚至十几万）。</p>
+</li>
+<li>
+<p><strong>优秀模型：</strong> 在通用的英文语料上（如 Penn Treebank），优秀的模型 PPL 通常在 20 到 60 之间。</p>
+</li>
+</ul>
+<hr />
+<h4 id="4-ppl">4. 使用 PPL 的注意事项</h4>
+<ul>
+<li>
+<p><strong>分词影响：</strong> PPL 受分词方式（Tokenizer）影响很大。不同分词方案（如 Word-level vs BPE）产生的 PPL 无法直接比较。</p>
+</li>
+<li>
+<p><strong>语料相关：</strong> PPL 只能在相同的测试集上比较才有意义。</p>
+</li>
+<li>
+<p><strong>不等于人类感官：</strong> 虽然 PPL 低通常意味着写得好，但有时 PPL 极低的模型可能会陷入“复读机”模式，因此还需要配合 BLEU、ROUGE 或人工评估。</p>
+</li>
+</ul>
+<p><strong>你想了解如何用 Python 或 PyTorch 代码来实现 PPL 的计算吗？</strong></p>
+<h3 id="calibration">Calibration</h3>
+<p>在机器学习，尤其是分类任务中，<strong>校准 (Calibration)</strong> 是一个关键的概念，它衡量的是模型对自身预测<strong>置信度</strong>的可靠性。</p>
+<h5 id="1-calibration">1. 什么是 Calibration（校准）？</h5>
+<p>在机器学习中，<strong>校准</strong>指的是模型输出的<strong>预测概率（或置信度）</strong>与实际观察到的<strong>准确率</strong>之间的一致性。</p>
+<p>理想的校准状态（Perfect Calibration）：</p>
+<p>一个完美校准的分类器，当它以 <span class="arithmatex"><span class="MathJax_Preview">P</span><script type="math/tex">P</script></span> 的概率做出预测时，它的预测有正好 <span class="arithmatex"><span class="MathJax_Preview">P</span><script type="math/tex">P</script></span> 的概率是正确的。</p>
+<ul>
+<li>
+<p><strong>举例：</strong></p>
+<ul>
+<li>
+<p>如果模型预测 100 个样本的概率都是 <strong>80%</strong>，那么这 100 个样本中应该有大约 <strong>80 个</strong>是正确分类的。</p>
+</li>
+<li>
+<p>如果模型预测 100 个样本的概率都是 <strong>50%</strong>，那么这 100 个样本中应该有大约 <strong>50 个</strong>是正确分类的。</p>
+</li>
+</ul>
+</li>
+</ul>
+<p>如果模型在预测概率为 80% 的时候，实际的准确率却只有 65%，我们就说这个模型<strong>过度自信（Over-confident）</strong>，它是<strong>未校准 (Uncalibrated)</strong> 的。</p>
+<h5 id="2-ece-mce">2. ECE 和 MCE 是用来做什么的？</h5>
+<p><strong>Expected Calibration Error (ECE)</strong> 和 <strong>Maximum Calibration Error (MCE)</strong> 是最常用的<strong>量化模型校准性</strong>的指标。它们通过比较模型的预测<strong>置信度（Confidence）</strong>和实际的<strong>准确率（Accuracy）</strong>来工作。</p>
+<p>为了计算这两个指标，通常需要将模型所有的预测概率划分为 <span class="arithmatex"><span class="MathJax_Preview">M</span><script type="math/tex">M</script></span> 个<strong>区间（Bins）</strong>，比如 10 个等宽的区间（0-0.1, 0.1-0.2, ... 0.9-1.0）。</p>
+<hr />
+<h6 id="ece-expected-calibration-error">ECE (Expected Calibration Error) 期望校准误差</h6>
+<ul>
+<li>
+<p><strong>作用：</strong> 衡量模型<strong>平均</strong>而言的校准误差。</p>
+</li>
+<li>
+<p><strong>计算方法：</strong> 它是所有置信度区间（Bin）内，<strong>平均置信度</strong>与<strong>实际准确率</strong>之间差异的<strong>加权平均</strong>。</p>
+<ul>
+<li>权重通常是每个区间内的样本占总样本的比例。</li>
+</ul>
+</li>
+<li>
+<p><strong>解读：</strong> ECE 越低，表示模型的预测概率与实际准确率之间的<strong>平均差距越小</strong>，校准性越好。ECE 可以用来衡量模型的<strong>整体校准质量</strong>。</p>
+</li>
+</ul>
+<div class="arithmatex">
+<div class="MathJax_Preview">\text{ECE} = \sum_{m=1}^{M} \frac{|B_m|}{N} \left| \text{acc}(B_m) - \text{conf}(B_m) \right|</div>
+<script type="math/tex; mode=display">\text{ECE} = \sum_{m=1}^{M} \frac{|B_m|}{N} \left| \text{acc}(B_m) - \text{conf}(B_m) \right|</script>
+</div>
+<p><em>其中 <span class="arithmatex"><span class="MathJax_Preview">\text{acc}(B_m)</span><script type="math/tex">\text{acc}(B_m)</script></span> 是区间 <span class="arithmatex"><span class="MathJax_Preview">B_m</span><script type="math/tex">B_m</script></span> 的准确率，<span class="arithmatex"><span class="MathJax_Preview">\text{conf}(B_m)</span><script type="math/tex">\text{conf}(B_m)</script></span> 是平均置信度，<span class="arithmatex"><span class="MathJax_Preview">\frac{|B_m|}{N}</span><script type="math/tex">\frac{|B_m|}{N}</script></span> 是该区间的权重。</em></p>
+<hr />
+<h6 id="mce-maximum-calibration-error">MCE (Maximum Calibration Error) 最大校准误差</h6>
+<ul>
+<li>
+<p><strong>作用：</strong> 衡量模型校准误差的<strong>最坏情况</strong>。</p>
+</li>
+<li>
+<p><strong>计算方法：</strong> 它是所有置信度区间中，<strong>平均置信度</strong>与<strong>实际准确率</strong>之间差异的<strong>最大值</strong>。</p>
+</li>
+<li>
+<p><strong>解读：</strong> MCE 越低，表示模型在<strong>任何一个</strong>置信度区间内都没有出现<strong>灾难性的</strong>校准偏差。MCE 对于<strong>高风险应用</strong>（如医疗诊断、自动驾驶）特别重要，因为这些场景需要最大限度地减少最坏情况下的置信度偏差。</p>
+</li>
+</ul>
+<div class="arithmatex">
+<div class="MathJax_Preview">\text{MCE} = \max_{m \in \{1, \dots, M\}} \left| \text{acc}(B_m) - \text{conf}(B_m) \right|</div>
+<script type="math/tex; mode=display">\text{MCE} = \max_{m \in \{1, \dots, M\}} \left| \text{acc}(B_m) - \text{conf}(B_m) \right|</script>
+</div>
+<hr />
+<h5 id="reliability-diagram">📊 可视化工具：可靠性图（Reliability Diagram）</h5>
+<p>为了更好地理解 ECE 和 MCE，我们通常会使用<strong>可靠性图（Reliability Diagram）</strong> 来进行可视化。</p>
+<ul>
+<li>
+<p><strong>图的横轴：</strong> 模型的平均预测<strong>置信度</strong>（按区间划分）。</p>
+</li>
+<li>
+<p><strong>图的纵轴：</strong> 模型在对应置信度区间内的实际<strong>准确率</strong>。</p>
+</li>
+<li>
+<p><strong>理想线：</strong> 一条从 (0, 0) 到 (1, 1) 的对角线。如果模型完美校准，图中的点就应该落在这条线上。</p>
+</li>
+</ul>
+<p><strong>ECE</strong> 衡量的是所有点到对角线距离的<strong>加权平均</strong>，而 <strong>MCE</strong> 衡量的是所有点到对角线距离的<strong>最大值</strong>。</p>
+<h4 id="ece-expected-calibration-error-mce-maximum-calibration-error">ECE (Expected Calibration Error)和 MCE (Maximum Calibration Error)例子</h4>
+<p>好的，我们来用您给出的 <strong>3 个样本</strong>的例子，演示如何计算 <strong>ECE</strong> 和 <strong>MCE</strong>。</p>
+<p>为了计算这两个指标，我们需要将置信度（即模型预测的最高概率）划分到不同的<strong>区间 (Bins)</strong> 中。由于我们只有三个样本，为了简化演示，我们使用 3 个自定义的区间：</p>
+<table>
+<thead>
+<tr>
+<th><strong>置信度区间 Bm​</strong></th>
+<th><strong>样本 A conf=0.80</strong></th>
+<th><strong>样本 B conf=0.50</strong></th>
+<th><strong>样本 C conf=0.55</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong><span class="arithmatex"><span class="MathJax_Preview">B_1</span><script type="math/tex">B_1</script></span>: [0.0, 0.4]</strong></td>
+<td>-</td>
+<td>-</td>
+<td>-</td>
+</tr>
+<tr>
+<td><strong><span class="arithmatex"><span class="MathJax_Preview">B_2</span><script type="math/tex">B_2</script></span>: (0.4, 0.6]</strong></td>
+<td>-</td>
+<td>样本 B (0.50)</td>
+<td>样本 C (0.55)</td>
+</tr>
+<tr>
+<td><strong><span class="arithmatex"><span class="MathJax_Preview">B_3</span><script type="math/tex">B_3</script></span>: (0.6, 1.0]</strong></td>
+<td>样本 A (0.80)</td>
+<td>-</td>
+<td>-</td>
+</tr>
+</tbody>
+</table>
+<p>总样本数 <span class="arithmatex"><span class="MathJax_Preview">N = 3</span><script type="math/tex">N = 3</script></span>。</p>
+<hr />
+<h5 id="_2">步骤一：计算每个区间的指标</h5>
+<p>我们针对 <span class="arithmatex"><span class="MathJax_Preview">B_2</span><script type="math/tex">B_2</script></span> 和 <span class="arithmatex"><span class="MathJax_Preview">B_3</span><script type="math/tex">B_3</script></span> 这两个非空区间进行计算：</p>
+<h6 id="b_2b_2-04-06">📊 区间 <span class="arithmatex"><span class="MathJax_Preview">B_2</span><script type="math/tex">B_2</script></span>: (0.4, 0.6]</h6>
+<ol>
+<li>
+<p><strong>平均置信度 <span class="arithmatex"><span class="MathJax_Preview">\text{conf}(B_2)</span><script type="math/tex">\text{conf}(B_2)</script></span>:</strong></p>
+<div class="arithmatex">
+<div class="MathJax_Preview">\text{conf}(B_2) = \frac{0.50 + 0.55}{2} = \frac{1.05}{2} = \mathbf{0.525}</div>
+<script type="math/tex; mode=display">\text{conf}(B_2) = \frac{0.50 + 0.55}{2} = \frac{1.05}{2} = \mathbf{0.525}</script>
+</div>
+</li>
+<li>
+<p><strong>实际准确率 <span class="arithmatex"><span class="MathJax_Preview">\text{acc}(B_2)</span><script type="math/tex">\text{acc}(B_2)</script></span>:</strong></p>
+<ul>
+<li>
+<p>样本 B (置信度 0.50): <strong>正确</strong></p>
+</li>
+<li>
+<p>样本 C (置信度 0.55): 错误</p>
+<div class="arithmatex">
+<div class="MathJax_Preview">\text{acc}(B_2) = \frac{\text{正确样本数}}{|B_2|} = \frac{1}{2} = \mathbf{0.50}</div>
+<script type="math/tex; mode=display">\text{acc}(B_2) = \frac{\text{正确样本数}}{|B_2|} = \frac{1}{2} = \mathbf{0.50}</script>
+</div>
+</li>
+</ul>
+</li>
+<li>
+<p>校准误差 <span class="arithmatex"><span class="MathJax_Preview">\text{CalError}(B_2)</span><script type="math/tex">\text{CalError}(B_2)</script></span>:</p>
+<div class="arithmatex">
+<div class="MathJax_Preview">\text{CalError}(B_2) = |\text{acc}(B_2) - \text{conf}(B_2)| = |0.50 - 0.525| = \mathbf{0.025}</div>
+<script type="math/tex; mode=display">\text{CalError}(B_2) = |\text{acc}(B_2) - \text{conf}(B_2)| = |0.50 - 0.525| = \mathbf{0.025}</script>
+</div>
+</li>
+</ol>
+<h6 id="b_3b_3-06-10">📊 区间 <span class="arithmatex"><span class="MathJax_Preview">B_3</span><script type="math/tex">B_3</script></span>: (0.6, 1.0]</h6>
+<ol>
+<li>
+<p><strong>平均置信度 <span class="arithmatex"><span class="MathJax_Preview">\text{conf}(B_3)</span><script type="math/tex">\text{conf}(B_3)</script></span>:</strong></p>
+<div class="arithmatex">
+<div class="MathJax_Preview">\text{conf}(B_3) = \frac{0.80}{1} = \mathbf{0.80}</div>
+<script type="math/tex; mode=display">\text{conf}(B_3) = \frac{0.80}{1} = \mathbf{0.80}</script>
+</div>
+</li>
+<li>
+<p><strong>实际准确率 <span class="arithmatex"><span class="MathJax_Preview">\text{acc}(B_3)</span><script type="math/tex">\text{acc}(B_3)</script></span>:</strong></p>
+<ul>
+<li>
+<p>样本 A (置信度 0.80): 正确</p>
+<div class="arithmatex">
+<div class="MathJax_Preview">\text{acc}(B_3) = \frac{\text{正确样本数}}{|B_3|} = \frac{1}{1} = \mathbf{1.00}</div>
+<script type="math/tex; mode=display">\text{acc}(B_3) = \frac{\text{正确样本数}}{|B_3|} = \frac{1}{1} = \mathbf{1.00}</script>
+</div>
+</li>
+</ul>
+</li>
+<li>
+<p>校准误差 <span class="arithmatex"><span class="MathJax_Preview">\text{CalError}(B_3)</span><script type="math/tex">\text{CalError}(B_3)</script></span>:</p>
+<div class="arithmatex">
+<div class="MathJax_Preview">\text{CalError}(B_3) = |\text{acc}(B_3) - \text{conf}(B_3)| = |1.00 - 0.80| = \mathbf{0.20}</div>
+<script type="math/tex; mode=display">\text{CalError}(B_3) = |\text{acc}(B_3) - \text{conf}(B_3)| = |1.00 - 0.80| = \mathbf{0.20}</script>
+</div>
+</li>
+</ol>
+<hr />
+<h5 id="ece-expected-calibration-error_1">步骤二：计算 ECE (Expected Calibration Error)</h5>
+<p>ECE 是所有区间校准误差的<strong>加权平均值</strong>。权重是该区间的样本数 <span class="arithmatex"><span class="MathJax_Preview">|B_m|</span><script type="math/tex">|B_m|</script></span> 占总样本数 <span class="arithmatex"><span class="MathJax_Preview">N</span><script type="math/tex">N</script></span> 的比例。</p>
+<div class="arithmatex">
+<div class="MathJax_Preview">\text{ECE} = \sum_{m=1}^{M} \frac{|B_m|}{N} \cdot \text{CalError}(B_m)</div>
+<script type="math/tex; mode=display">\text{ECE} = \sum_{m=1}^{M} \frac{|B_m|}{N} \cdot \text{CalError}(B_m)</script>
+</div>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">区间</th>
+<th style="text-align: left;"><span class="arithmatex"><span class="MathJax_Preview">\frac{\vert B_m \vert}{N}</span><script type="math/tex">\frac{\vert B_m \vert}{N}</script></span> (权重)</th>
+<th style="text-align: left;"><span class="arithmatex"><span class="MathJax_Preview">\text{CalError}(B_m)</span><script type="math/tex">\text{CalError}(B_m)</script></span></th>
+<th style="text-align: left;"><span class="arithmatex"><span class="MathJax_Preview">\text{权重} \times \text{误差}</span><script type="math/tex">\text{权重} \times \text{误差}</script></span></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><span class="arithmatex"><span class="MathJax_Preview">B_2</span><script type="math/tex">B_2</script></span></td>
+<td style="text-align: left;"><span class="arithmatex"><span class="MathJax_Preview">\frac{2}{3}</span><script type="math/tex">\frac{2}{3}</script></span></td>
+<td style="text-align: left;"><span class="arithmatex"><span class="MathJax_Preview">0.025</span><script type="math/tex">0.025</script></span></td>
+<td style="text-align: left;"><span class="arithmatex"><span class="MathJax_Preview">\frac{2}{3} \times 0.025 \approx 0.0167</span><script type="math/tex">\frac{2}{3} \times 0.025 \approx 0.0167</script></span></td>
+</tr>
+<tr>
+<td style="text-align: left;"><span class="arithmatex"><span class="MathJax_Preview">B_3</span><script type="math/tex">B_3</script></span></td>
+<td style="text-align: left;"><span class="arithmatex"><span class="MathJax_Preview">\frac{1}{3}</span><script type="math/tex">\frac{1}{3}</script></span></td>
+<td style="text-align: left;"><span class="arithmatex"><span class="MathJax_Preview">0.20</span><script type="math/tex">0.20</script></span></td>
+<td style="text-align: left;"><span class="arithmatex"><span class="MathJax_Preview">\frac{1}{3} \times 0.20 \approx 0.0667</span><script type="math/tex">\frac{1}{3} \times 0.20 \approx 0.0667</script></span></td>
+</tr>
+</tbody>
+</table>
+<div class="arithmatex">
+<div class="MathJax_Preview">\text{ECE} \approx 0.0167 + 0.0667 = \mathbf{0.0834}</div>
+<script type="math/tex; mode=display">\text{ECE} \approx 0.0167 + 0.0667 = \mathbf{0.0834}</script>
+</div>
+<h5 id="mce-maximum-calibration-error_1">步骤三：计算 MCE (Maximum Calibration Error)</h5>
+<p>MCE 是所有区间的校准误差中的<strong>最大值</strong>。</p>
+<div class="arithmatex">
+<div class="MathJax_Preview">\text{MCE} = \max_{m} (\text{CalError}(B_m))</div>
+<script type="math/tex; mode=display">\text{MCE} = \max_{m} (\text{CalError}(B_m))</script>
+</div>
+<div class="arithmatex">
+<div class="MathJax_Preview">\text{MCE} = \max(0.025, 0.20) = \mathbf{0.20}</div>
+<script type="math/tex; mode=display">\text{MCE} = \max(0.025, 0.20) = \mathbf{0.20}</script>
+</div>
+<h5 id="_3">结论</h5>
+<p>在这个小样本的例子中：</p>
+<ul>
+<li>
+<p><strong>ECE <span class="arithmatex"><span class="MathJax_Preview">\approx 0.0834</span><script type="math/tex">\approx 0.0834</script></span></strong>：表示该模型的<strong>平均</strong>校准误差尚可。</p>
+</li>
+<li>
+<p><strong>MCE <span class="arithmatex"><span class="MathJax_Preview">= 0.20</span><script type="math/tex">= 0.20</script></span></strong>：表示该模型在置信度最高的区间 <span class="arithmatex"><span class="MathJax_Preview">B_3</span><script type="math/tex">B_3</script></span> <strong>(0.6, 1.0]</strong> 表现出最大的不一致。模型在这个区间内的平均置信度是 <span class="arithmatex"><span class="MathJax_Preview">0.80</span><script type="math/tex">0.80</script></span>，但实际准确率达到了 <span class="arithmatex"><span class="MathJax_Preview">1.00</span><script type="math/tex">1.00</script></span>，说明模型<strong>略微</strong>存在<strong>过度谨慎（Under-confident）</strong>的倾向，即它本可以更自信地做出预测。</p>
+</li>
+</ul>
+<hr />
+<h3 id="hit-rate-hitk">Hit Rate (Hit@k)</h3>
+<p><strong>含义：</strong> 只要前 <span class="arithmatex"><span class="MathJax_Preview">k</span><script type="math/tex">k</script></span> 个推荐列表中包含了一个用户感兴趣的物品，就计为 1（命中），否则为 0。它反映了模型“至少能推对一个”的能力。</p>
+<p>公式：</p>
+<div class="arithmatex">
+<div class="MathJax_Preview">\text{Hit@k} = \frac{1}{|U|} \sum_{u \in U} I(\text{rel}_u \cap R_{u,k} \neq \emptyset)</div>
+<script type="math/tex; mode=display">\text{Hit@k} = \frac{1}{|U|} \sum_{u \in U} I(\text{rel}_u \cap R_{u,k} \neq \emptyset)</script>
+</div>
+<p>其中 <span class="arithmatex"><span class="MathJax_Preview">I(\cdot)</span><script type="math/tex">I(\cdot)</script></span> 是指示函数，<span class="arithmatex"><span class="MathJax_Preview">R_{u,k}</span><script type="math/tex">R_{u,k}</script></span> 是为用户推荐的前 <span class="arithmatex"><span class="MathJax_Preview">k</span><script type="math/tex">k</script></span> 个物品集合。</p>
+<hr />
+<h3 id="precision">Precision (精度/准确率)</h3>
+<p><strong>含义：</strong> 在推荐的前 <span class="arithmatex"><span class="MathJax_Preview">k</span><script type="math/tex">k</script></span> 个物品中，有多少比例是用户感兴趣的。</p>
+<p>公式：</p>
+<div class="arithmatex">
+<div class="MathJax_Preview">\text{Precision@k} = \frac{|\text{Relevant Items} \cap \text{Top-k Items}|}{k}</div>
+<script type="math/tex; mode=display">\text{Precision@k} = \frac{|\text{Relevant Items} \cap \text{Top-k Items}|}{k}</script>
+</div>
+<hr />
+<h3 id="recall">Recall (召回率)</h3>
+<p><strong>含义：</strong> 用户所有感兴趣的物品中，有多少比例被排在了前 <span class="arithmatex"><span class="MathJax_Preview">k</span><script type="math/tex">k</script></span> 个推荐位里。</p>
+<p>公式：</p>
+<div class="arithmatex">
+<div class="MathJax_Preview">\text{Recall@k} = \frac{|\text{Relevant Items} \cap \text{Top-k Items}|}{|\text{All Relevant Items}|}</div>
+<script type="math/tex; mode=display">\text{Recall@k} = \frac{|\text{Relevant Items} \cap \text{Top-k Items}|}{|\text{All Relevant Items}|}</script>
+</div>
+<hr />
+<h3 id="f1-score">F1-Score</h3>
+<p><strong>含义：</strong> Precision 和 Recall 的调和平均数，用于综合权衡两者的表现。</p>
+<p>公式：</p>
+<div class="arithmatex">
+<div class="MathJax_Preview">F1@k = 2 \cdot \frac{\text{Precision@k} \cdot \text{Recall@k}}{\text{Precision@k} + \text{Recall@k}}</div>
+<script type="math/tex; mode=display">F1@k = 2 \cdot \frac{\text{Precision@k} \cdot \text{Recall@k}}{\text{Precision@k} + \text{Recall@k}}</script>
+</div>
+<hr />
+<h3 id="mrr-mean-reciprocal-rank">MRR (Mean Reciprocal Rank，平均倒数排名)</h3>
+<p><strong>含义：</strong> 关注<strong>第一个</strong>正确结果出现的位置。如果第一个正确答案排在第 <span class="arithmatex"><span class="MathJax_Preview">r</span><script type="math/tex">r</script></span> 位，则分数为 <span class="arithmatex"><span class="MathJax_Preview">1/r</span><script type="math/tex">1/r</script></span>。分数越高，说明正确答案排得越靠前。</p>
+<p>公式：</p>
+<div class="arithmatex">
+<div class="MathJax_Preview">\text{MRR} = \frac{1}{|U|} \sum_{i=1}^{|U|} \frac{1}{\text{rank}_i}</div>
+<script type="math/tex; mode=display">\text{MRR} = \frac{1}{|U|} \sum_{i=1}^{|U|} \frac{1}{\text{rank}_i}</script>
+</div>
+<p>其中 <span class="arithmatex"><span class="MathJax_Preview">\text{rank}_i</span><script type="math/tex">\text{rank}_i</script></span> 是第 <span class="arithmatex"><span class="MathJax_Preview">i</span><script type="math/tex">i</script></span> 个用户第一个命中物品的排名位置。</p>
+<hr />
+<h3 id="map-mean-average-precision">MAP (Mean Average Precision，平均准确率均值)</h3>
+<p><strong>含义：</strong> 考虑了所有正确答案的排名。它先计算每个用户的 Average Precision (AP)，再对所有用户取平均。</p>
+<p>公式：</p>
+<div class="arithmatex">
+<div class="MathJax_Preview">\text{AP} = \frac{\sum_{n=1}^k (\text{Precision@n} \times \text{rel}(n))}{\text{Total Relevant Items}}</div>
+<script type="math/tex; mode=display">\text{AP} = \frac{\sum_{n=1}^k (\text{Precision@n} \times \text{rel}(n))}{\text{Total Relevant Items}}</script>
+</div>
+<div class="arithmatex">
+<div class="MathJax_Preview">\text{MAP} = \frac{1}{|U|} \sum_{u \in U} \text{AP}_u</div>
+<script type="math/tex; mode=display">\text{MAP} = \frac{1}{|U|} \sum_{u \in U} \text{AP}_u</script>
+</div>
+<p>其中 <span class="arithmatex"><span class="MathJax_Preview">\text{rel}(n)</span><script type="math/tex">\text{rel}(n)</script></span> 为第 <span class="arithmatex"><span class="MathJax_Preview">n</span><script type="math/tex">n</script></span> 个位置是否相关（1 或 0）。</p>
+<hr />
+<h3 id="ndcg-normalized-discounted-cumulative-gain">NDCG (Normalized Discounted Cumulative Gain，归一化折损累计增益)</h3>
+<p><strong>含义：</strong> 最常用的排名指标。它不仅关心是否命中，更关心<strong>命中的位置</strong>。位置越靠前，权重（Gain）越高。</p>
+<ul>
+<li>
+<p><strong>DCG (折损增益):</strong></p>
+<div class="arithmatex">
+<div class="MathJax_Preview">\text{DCG}_k = \sum_{i=1}^k \frac{2^{rel_i} - 1}{\log_2(i+1)}</div>
+<script type="math/tex; mode=display">\text{DCG}_k = \sum_{i=1}^k \frac{2^{rel_i} - 1}{\log_2(i+1)}</script>
+</div>
+</li>
+<li>
+<p><strong>IDCG:</strong> 理想状态下（即把所有相关项都排在最前面）的 DCG。</p>
+</li>
+<li>
+<p><strong>NDCG:</strong></p>
+<div class="arithmatex">
+<div class="MathJax_Preview">\text{NDCG}_k = \frac{\text{DCG}_k}{\text{IDCG}_k}</div>
+<script type="math/tex; mode=display">\text{NDCG}_k = \frac{\text{DCG}_k}{\text{IDCG}_k}</script>
+</div>
+</li>
+</ul>
+<blockquote>
+<p><strong>注意：</strong> <code>linear</code> 和 <code>exponential</code> 指的是 DCG 公式中对相关度 (<span class="arithmatex"><span class="MathJax_Preview">rel_i</span><script type="math/tex">rel_i</script></span>) 的处理方式。</p>
+<ul>
+<li>
+<p><strong>Linear:</strong> 直接使用相关度分值。</p>
+</li>
+<li>
+<p><strong>Exponential:</strong> 使用 <span class="arithmatex"><span class="MathJax_Preview">2^{rel_i} - 1</span><script type="math/tex">2^{rel_i} - 1</script></span>，这会大幅增加高相关度物品排在前面的奖励。
+</p>
+</li>
+</ul>
+</blockquote>
+<hr />
+<h3 id="_4">指标间关系</h3>
+<ul>
+<li>
+<p>Hit@1 = Precision@1 = Recall@1 = MRR@1 = 0.456：</p>
+<p>这是因为在 <span class="arithmatex"><span class="MathJax_Preview">k=1</span><script type="math/tex">k=1</script></span> 且每个用户通常只有一个正样本（常见于 Leave-one-out 评估法）时，这些指标在数学上是等价的。</p>
+</li>
+<li>
+<p>Precision 随 @k 增大而下降：</p>
+<p>这是正常的。因为分母 <span class="arithmatex"><span class="MathJax_Preview">k</span><script type="math/tex">k</script></span> 在变大，但用户的正样本数量通常很少（可能只有 1 个），所以 <span class="arithmatex"><span class="MathJax_Preview">k</span><script type="math/tex">k</script></span> 越大，Precision 越稀释。</p>
+</li>
+</ul>
+<p>MRR v.s. NDCG</p>
+<ul>
+<li>
+<p><strong>如果你的任务中每个搜索/推荐只有一个标准答案：</strong> 两者排序基本一致，选哪个都行（MRR 更常用，简单直观）。</p>
+</li>
+<li>
+<p><strong>如果你的任务中存在多个正确答案（或者有相关分值）：</strong> 它们的排序<strong>经常会发生分歧</strong>。此时 <strong>NDCG</strong> 被认为是更权威、更精细的指标，因为它奖励了模型召回更多正确项的能力。</p>
+</li>
+</ul>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": [], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+        <script src="https://cdn.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+      
+        <script src="../../assets/javascripts/collapse.js"></script>
+      
+    
+  </body>
+</html>

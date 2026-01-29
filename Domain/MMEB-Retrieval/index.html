@@ -1,0 +1,2013 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+        <link rel="canonical" href="https://ray-lei-17.github.io/LearnAI-with-Ray/Domain/MMEB-Retrieval/">
+      
+      
+        <link rel="prev" href="../MLLM/">
+      
+      
+        <link rel="next" href="../Quantization/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.1">
+    
+    
+      
+        <title>MMEB Retrieval - LearnAI-with-Ray</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.484c7ddc.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/extra.css">
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    <body dir="ltr">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#qwen3-vl-embedding-8b" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="LearnAI-with-Ray" class="md-header__button md-logo" aria-label="LearnAI-with-Ray" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            LearnAI-with-Ray
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              MMEB Retrieval
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="LearnAI-with-Ray" class="md-nav__button md-logo" aria-label="LearnAI-with-Ray" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    LearnAI-with-Ray
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Conference
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Conference
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../Conference/Survey/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Survey
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Domain
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Domain
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../MLLM/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Multimodal LLM
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    MMEB Retrieval
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    MMEB Retrieval
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#qwen3-vl-embedding-8b" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Qwen3-VL-Embedding-8B
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Qwen3-VL-Embedding-8B">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        模型架构
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        训练数据
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="训练数据">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#positive-refinement-and-hard-negative-mining" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Positive Refinement and Hard Negative Mining
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        训练策略
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#interestfm-tte-embedding" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        InterestFM-TTE Embedding
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="InterestFM-TTE Embedding">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#method" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Method
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Method">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#embedding-head-designs" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Embedding head designs
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#hard-negative-mining" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Hard Negative Mining
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#qqmm-embed" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        QQMM-embed
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="QQMM-embed">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#method_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Method
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Method">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#gradient-analysis-of-info-nce" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Gradient Analysis of info-NCE
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#explicit-gradient-amplifier" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Explicit Gradient Amplifier
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#seed16-embedding" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Seed1.6-Embedding
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Seed1.6-Embedding">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#training-method" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Training Method
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#rzenembed-v1-7b" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        RzenEmbed-v1-7B
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#e5-omni" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        e5-omni
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#gve" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        GVE
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="GVE">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#modality-pyramid" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Modality Pyramid
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#ume-r1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        UME-R1
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#rematch" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ReMatch
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Quantization/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    量化
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../RAG/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    RAG
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Math
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Math
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../Math/Arch/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Arch
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../Math/DPO/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    DPO
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../Math/Metrics/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Metrics
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../Math/RL%20for%20LLM/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    RL for LLM
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../Math/ROPE/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ROPE
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../Math/Residual/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Residual
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Personal Development
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Personal Development
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../Personal%20Development/GPT%E4%BE%9D%E8%B5%96/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    GPT依赖
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../Personal%20Development/%E5%85%8B%E6%9C%8D%E5%AE%8C%E7%BE%8E%E4%B8%BB%E4%B9%89/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    克服完美主义
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../Personal%20Development/%E9%A6%99%E8%95%89%E8%B6%8A%E5%A4%A7%EF%BC%8C%E9%A6%99%E8%95%89%E7%9A%AE%E8%B6%8A%E5%A4%A7/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    香蕉越大，香蕉皮越大
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Tool
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Tool
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../Tool/LLMRepo/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Very Useful Repo about LLM
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../Tool/Mac%20App/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Mac App
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../Tool/Mac-HiDPI/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Mac开启HiDPI
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../Tool/Obsidian-MkDocs/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Obsidian MkDocs
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../Tool/Vscode-Tunnel/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    VS Code Tunnel
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../Tool/args-kwargs/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    *args vs. **kwargs
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../Tool/git/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Git
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../Tool/python%E7%B1%BB%E8%A3%85%E9%A5%B0%E5%99%A8/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Python类装饰器
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../Tool/wandb/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Wandb使用
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../Tool/%E5%BE%AE%E4%BF%A1%E8%A7%86%E9%A2%91%E5%8F%B7%E4%B8%8B%E8%BD%BD/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    微信视频号下载
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../Tool/%E6%8A%BD%E8%B1%A1/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    什么时候需要代码抽象？
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#qwen3-vl-embedding-8b" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Qwen3-VL-Embedding-8B
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Qwen3-VL-Embedding-8B">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        模型架构
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        训练数据
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="训练数据">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#positive-refinement-and-hard-negative-mining" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Positive Refinement and Hard Negative Mining
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        训练策略
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#interestfm-tte-embedding" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        InterestFM-TTE Embedding
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="InterestFM-TTE Embedding">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#method" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Method
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Method">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#embedding-head-designs" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Embedding head designs
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#hard-negative-mining" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Hard Negative Mining
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#qqmm-embed" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        QQMM-embed
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="QQMM-embed">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#method_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Method
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Method">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#gradient-analysis-of-info-nce" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Gradient Analysis of info-NCE
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#explicit-gradient-amplifier" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Explicit Gradient Amplifier
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#seed16-embedding" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Seed1.6-Embedding
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Seed1.6-Embedding">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#training-method" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Training Method
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#rzenembed-v1-7b" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        RzenEmbed-v1-7B
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#e5-omni" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        e5-omni
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#gve" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        GVE
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="GVE">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#modality-pyramid" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Modality Pyramid
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#ume-r1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        UME-R1
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#rematch" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ReMatch
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+
+  <h1>MMEB Retrieval</h1>
+
+<p>以下都是MMEB榜单上的sota</p>
+<h2 id="qwen3-vl-embedding-8b">Qwen3-VL-Embedding-8B</h2>
+<p><a href="https://qwen.ai/blog?id=qwen3-vl-embedding">Qwen3-VL-Embedding &amp; Qwen3-VL-Reranker：统一多模态表征与排序</a></p>
+<p>比较特别的一点是引入了Reranker
+- <strong>High-Precision Reranking (Reranker)</strong>: We also introduce the Qwen3-VL-Reranker series to complement the embedding model. The reranker takes a (query, document) pair as input—where both query and document may contain arbitrary single or mixed modalities—and outputs a precise relevance score. In retrieval pipelines, the two models are typically used in tandem: the embedding model performs efficient initial recall, while the reranker refines results in a subsequent re-ranking stage. This two-stage approach significantly boosts retrieval accuracy.<br />
+    高精度重排序（重排序器）：我们还引入了 Qwen3-VL-Reranker 系列来补充嵌入模型。重排序器以（查询，文档）对作为输入——其中查询和文档可能包含任意单一或混合模态——并输出精确的相关性分数。在检索流程中，这两个模型通常协同使用：嵌入模型执行高效的初始召回，而重排序器在后续的重排序阶段优化结果。这种两阶段方法显著提升了检索准确率。</p>
+<h3 id="_1">模型架构</h3>
+<p><img alt="Pasted image 20260123122216.png" src="../../assets/images/Pasted%20image%2020260123122216.png" /></p>
+<p>Qwen3-VL-Embedding 采用<strong>双塔架构</strong>，Qwen3-VL-Reranker采用<strong>单塔架构</strong>。</p>
+<p><strong>Embedding模型</strong>接收单模态或混合模态输入，并将其映射为高维语义向量。具体而言，我们提取基座模型最后一层中对应 <code>[EOS]</code> token 的隐藏状态向量，作为输入的最终语义表示。这种方法确保了大规模检索所需的高效独立编码能力。</p>
+<p><strong>Reranking模型</strong>接收输入对 <code>(Query, Document)</code> 并进行联合编码。它利用基座模型内的交叉注意力（Cross-Attention）机制，实现 Query 和 Document 之间更深层、更细粒度的跨模态交互和信息融合。模型最终通过预测两个特殊 token（<code>yes</code> 和 <code>no</code>）的生成概率来表达输入对的相关性分数。</p>
+<p>使用的模型都是qwen3-vl</p>
+<p><img alt="Pasted image 20260123122939.png" src="../../assets/images/Pasted%20image%2020260123122939.png" /></p>
+<p>重排方法 重排模型采用点式排序法，根据指令中提供的相关性定义来评估一对多模态实例之间的相关性。输入格式遵循 Qwen3-VL 上下文结构，其中相关性定义指令和待评估的一对多模态实例都作为用户信息传递。这些多模态输入可以是文本、图像、视频或这些模态的任意组合。最后，通过计算模型预测下一个输出标记为 "是 "或 "否 "的概率，获得这对标记的相关性估计。</p>
+<p><img alt="Pasted image 20260123123020.png" src="../../assets/images/Pasted%20image%2020260123123020.png" /></p>
+<h3 id="_2">训练数据</h3>
+<p><img alt="Pasted image 20260123131539.png" src="../../assets/images/Pasted%20image%2020260123131539.png" /></p>
+<h4 id="positive-refinement-and-hard-negative-mining">Positive Refinement and Hard Negative Mining</h4>
+<p><img alt="Pasted image 20260123145810.png" src="../../assets/images/Pasted%20image%2020260123145810.png" /></p>
+<h3 id="_3">训练策略</h3>
+<p><img alt="Pasted image 20260123131740.png" src="../../assets/images/Pasted%20image%2020260123131740.png" />
+不断筛选，训练，再筛选，再训练，再筛选。</p>
+<h2 id="interestfm-tte-embedding">InterestFM-TTE Embedding</h2>
+<p><a href="https://arxiv.org/pdf/2510.05014">Think Then Embed: Generative Context Improves Multimodal Embedding</a></p>
+<h3 id="method">Method</h3>
+<p><img alt="Pasted image 20260123150907.png" src="../../assets/images/Pasted%20image%2020260123150907.png" /></p>
+<p>作者观察到，对于需要指令理解的检索任务，现有的基于编码器的方法在需要复杂推理和上下文基础的复杂指令上往往表现不佳。为此，我们引入了一个明确的“思考”阶段，通过利用思维链（Chain-of-Thought）推理轨迹，在生成嵌入之前进行思考。思考阶段由一个从 7B 到 70B 的 LLM 推理器处理，为 7B 嵌入器提供有用的上下文标记。在不增加额外数据或复杂训练技术的情况下，这种方法在 7B 基线上的绝对提升达到了 10%。</p>
+<h4 id="embedding-head-designs">Embedding head designs</h4>
+<p><img alt="Pasted image 20260127165159.png" src="../../assets/images/Pasted%20image%2020260127165159.png" /></p>
+<p>文章使用最后n层作为embedding head的初始化 ，然后再做finetune</p>
+<h4 id="hard-negative-mining">Hard Negative Mining</h4>
+<p><img alt="Pasted image 20260123151118.png" src="../../assets/images/Pasted%20image%2020260123151118.png" /></p>
+<p>在通过对比学习训练鲁棒嵌入模型时，另一个主要挑战是选择硬负样本，即语义上与目标相似但并非真实匹配的样本。作者采用基于聚类的硬负采样方法来解决这个问题。首先，使用批内负样本训练嵌入模型，然后使用该模型为训练集生成嵌入。对于每个查询，根据嵌入相似性对候选样本进行排序，并选择排名前 k 的非匹配候选样本形成排序矩阵。最后，应用聚类算法构建包含硬负样本的批次，用于重新训练和增强嵌入模型。我们观察到采用硬负采样方法后，各项任务性能提升了高达 4%。</p>
+<p>我发现论文的内容和博客有点出入，两个我都截取了部分内容放上来</p>
+<h2 id="qqmm-embed">QQMM-embed</h2>
+<p><a href="https://arxiv.org/pdf/2506.02020">Improve Multi-Modal Embedding Learning via Explicit Hard Negative Gradient Amplifying</a></p>
+<p><img alt="Pasted image 20260123155422.png" src="../../assets/images/Pasted%20image%2020260123155422.png" /></p>
+<p><img alt="Pasted image 20260123155434.png" src="../../assets/images/Pasted%20image%2020260123155434.png" /></p>
+<h3 id="method_1">Method</h3>
+<h4 id="gradient-analysis-of-info-nce">Gradient Analysis of info-NCE</h4>
+<p>为了增大hard negative的效果，最直接的方法就是放大hard negative的梯度</p>
+<p><img alt="Pasted image 20260123160332.png" src="../../assets/images/Pasted%20image%2020260123160332.png" /></p>
+<p><img alt="Pasted image 20260123160443.png" src="../../assets/images/Pasted%20image%2020260123160443.png" /></p>
+<h4 id="explicit-gradient-amplifier">Explicit Gradient Amplifier</h4>
+<p><img alt="Pasted image 20260123160732.png" src="../../assets/images/Pasted%20image%2020260123160732.png" /></p>
+<p>作者认为决定负样本是否难以识别的关键因素不是它与查询的绝对相似度，而是它与查询的相似度与正样本的相似度相比有多接近。于是定义了一个指标，对比正样本计算负样本的难度Relative Similarity based Hardness score (RS-H)</p>
+<p><img alt="Pasted%20image%2020260123161334.png" src="../../assets/images/Pasted%20image%2020260123161334.png" width="300" /></p>
+<p>根据前面的公式，我们可以看出损失函数的权重是p，然后为了放大hard negative的效果，可以修改p的值，从而影响gradient</p>
+<p><img alt="Pasted%20image%2020260123162209.png" src="../../assets/images/Pasted%20image%2020260123162209.png" width="300" /></p>
+<p><img alt="Pasted image 20260123162253.png" src="../../assets/images/Pasted%20image%2020260123162253.png" /></p>
+<p>这就是模块的整个步骤，但是其中我有些不理解的意思是<span class="arithmatex"><span class="MathJax_Preview">\bar{P}-I</span><script type="math/tex">\bar{P}-I</script></span>，是意思是这个权重矩阵最后整体要加上一个<span class="arithmatex"><span class="MathJax_Preview">I</span><script type="math/tex">I</script></span>矩阵的意思吗，应该是加上来正样本的值</p>
+<h2 id="seed16-embedding"><a href="https://seed1-6-embedding.github.io/">Seed1.6-Embedding</a></h2>
+<p><img alt="Pasted image 20260123162805.png" src="../../assets/images/Pasted%20image%2020260123162805.png" /></p>
+<p>seed1.6-flash架构</p>
+<h3 id="training-method">Training Method</h3>
+<ol>
+<li>Stage1: Text Continue Training</li>
+<li>Stage 2: Multimodal Continue Training</li>
+<li>Stage 3: Fine-Tuning</li>
+</ol>
+<h2 id="rzenembed-v1-7b">RzenEmbed-v1-7B</h2>
+<p>没有做什么太多创新</p>
+<p>方法上是进行了一些负样本的优化</p>
+<p><img alt="Pasted image 20260128155036.png" src="../../assets/images/Pasted%20image%2020260128155036.png" /></p>
+<p>训练的几个阶段
+1. Multimodal Continual Training
+2. Fine-Tuning
+3. Task-Specific Learnable Temperature
+    1. τ越小，分布越锐利，迫使模型关注最难处理的负样本；而τ越大，分布越平滑，促使模型更均匀地考虑所有负样本。</p>
+<h2 id="e5-omni">e5-omni</h2>
+<p>多模态带来的三个问题：
+- 依赖于模态的锐度：使用单一全局温度可能会导致某些模态组合的 logits 过于尖锐，而其他模态的 logits 过于平缓，这会造成对比梯度的不平衡；
+- 负样本难度不平衡：负样本难度在不同模态间存在差异，且在训练过程中会发生变化；当将所有批内负样本一视同仁时，优化可能会被许多非常简单的负样本主导，从而削弱后期的学习信号，并限制混合模态批次中的细粒度区分能力；
+- 排名不稳定：异构输入之间的不一致几何结构使得排名对分数的小幅变化非常敏感，即使所有项目都嵌入在同一个空间中也如此。</p>
+<p>文章提出的三种方法：
+- Modality-aware Temperature Calibration. 引入了一个轻量级校准模块，该模块使用可训练的pre-模态缩放向量来校准跨模态的相似性对数值。这种自适应重缩放有助于平衡不同模态组合下的对比训练信号。
+- Controllable Negative Curriculum. 使用基于分位数的阈值选择批内负样本，并在预热期后逐步增加难度。为了减轻负样本选择引入的偏差，我们进一步加入了去偏对比目标（Chuang 等，2020），这可以稳定混合模态批次中的优化过程。
+- Batch Whitening and Covariance Alignment. 对嵌入应用批量白化变换（Ermolov 等，2021），并添加 CORAL 风格的正则项（Sun 和 Saenko，2016）以对齐跨模态的小批量协方差。这在共享空间中协调了二阶几何特征，并使对各种全模态输入的相似性比较更加一致。</p>
+<p><img alt="Pasted image 20260128160550.png" src="../../assets/images/Pasted%20image%2020260128160550.png" /></p>
+<p>简单来说从图里理解可以知道
+Modality-aware Temperature Calibration：温度是基于输入模型做了一个重新的计算</p>
+<p><img alt="Pasted%20image%2020260128162908.png" src="../../assets/images/Pasted%20image%2020260128162908.png" width="300" /></p>
+<p>Controllable Negative Curriculum：把比较easy的negative，mask掉，还有一个DCL，debiased constant</p>
+<p><img alt="Pasted%20image%2020260128162826.png" src="../../assets/images/Pasted%20image%2020260128162826.png" width="300" /></p>
+<p>Batch Whitening and Covariance Alignment：使得query和target的一阶和二阶统计特征靠近，即均值和cov，为此引入loss</p>
+<p><img alt="Pasted%20image%2020260128184156.png" src="../../assets/images/Pasted%20image%2020260128184156.png" width="300" />
+<img alt="Pasted%20image%2020260128184218.png" src="../../assets/images/Pasted%20image%2020260128184218.png" width="300" /></p>
+<p>最后在可视化部分对这里做了一个验证</p>
+<p><img alt="Pasted image 20260128184248.png" src="../../assets/images/Pasted%20image%2020260128184248.png" /></p>
+<h2 id="gve">GVE</h2>
+<p>Towards Universal Video Retrieval: Generalizing Video Embedding via Synthesized Multimodal Pyramid Curriculum</p>
+<p>因为这个是视频为主的，我只看里面部分的内容</p>
+<p><img alt="Pasted image 20260129110511.png" src="../../assets/images/Pasted%20image%2020260129110511.png" /></p>
+<h3 id="modality-pyramid">Modality Pyramid</h3>
+<p>Modality Pyramid 不是一个模型结构，而是一套“训练课程（curriculum）+ 动态任务调度”的策略，用来在高度异构的多模态检索任务中，避免简单任务过早主导训练、复杂任务学不会，从而学到更可泛化的统一 embedding。</p>
+<p>因为目前训练数据都非常的杂，什么形式的任务都有，容易简单的任务占据了大多数的优化，这里的主要方法就是说通过设置一个模型探针，在每个epoch开始之前判断每个任务的学习程度，然后据此采样，加了一个sigma参数，使得一开始是简单的样本多，后来越来越多加入有难度的样本</p>
+<p><img alt="Pasted image 20260129111820.png" src="../../assets/images/Pasted%20image%2020260129111820.png" /></p>
+<h2 id="ume-r1">UME-R1</h2>
+<p>这篇文章特别一些地方是用了RL在里面，用的GRPO</p>
+<p><img alt="Pasted image 20260129151234.png" src="../../assets/images/Pasted%20image%2020260129151234.png" /></p>
+<p>数据做了一些清洗与采样</p>
+<p>Reward分为几个部分：</p>
+<ol>
+<li>
+<p>Format Reward。如果按照prompt里面说的格式遵守则得到1，否则0</p>
+</li>
+<li>
+<p>Embedding Reward. 分成两个部分，一个是正样本和负样本的排序reward，还有一个是正负样本similarity gap的reward</p>
+</li>
+</ol>
+<p><img alt="Pasted image 20260129151404.png" src="../../assets/images/Pasted%20image%2020260129151404.png" /></p>
+<h2 id="rematch">ReMatch</h2>
+<p>整体来说在模型的使用上进行一些改进，首先在生成embedding的时候，在最后多加了几个learnable token，用多个embedding来表示一个文件（用loss限制尽量正交），然后在判断是否相关的时候将原始文本和embedding都一起送入MLLM做两两对比（多个embedding做一个平均，再过一个MLP）</p>
+<p><img alt="Pasted image 20260129160132.png" src="../../assets/images/Pasted%20image%2020260129160132.png" /></p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": [], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+        <script src="https://cdn.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+      
+        <script src="../../assets/javascripts/collapse.js"></script>
+      
+    
+  </body>
+</html>
