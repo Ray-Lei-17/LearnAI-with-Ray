@@ -35,19 +35,19 @@ I hope this repository can serve as both my personal learning journal and an ope
 
 ---
 
-### **📂 Repository Structure**
-```plaintext
-├── Conference/          # Information about Submissions
-│   └── Survey.md            # About Survey Submissions
-│
-├── Domain/              # Information about Difference Domain
-│   └── RAG.md
-│
-├── Tool/              # Tool used in the process
-│   └── git.md
-│
-└── README.md
-```
+### **📂 Where to Read / 阅读方式**
+我把内容整理成了一个文档站点，阅读体验更好，推荐从这里看：
+I’ve organized everything into a docs site. For the cleanest view, start here:
+https://ray-lei-17.github.io/LearnAI-with-Ray/
+
+### **🗂️ What’s Inside `docs/` / `docs/` 目录说明**
+- `Conference/`: 论文与综述整理 / Papers and surveys.
+- `Domain/`: 领域主题笔记（RAG、生成式、多模态等）/ Topic-specific notes (RAG, generative, multimodal, etc.).
+- `Math/`: 数学与基础概念（指标、损失、结构等）/ Math foundations and key concepts (metrics, losses, architectures).
+- `Physic/`: 建模与物理相关笔记 / Modeling/physics-related notes.
+- `Personal Development/`: 学习方法与反思 / Learning methods and reflections.
+- `Tool/`: 工具与工程记录（git、conda、VSC、Obsidian 等）/ Tooling and engineering notes (git, conda, VSC, Obsidian, etc.).
+- `assets/`: 站点样式与静态资源 / Site styles and static assets.
 
 ---
 
