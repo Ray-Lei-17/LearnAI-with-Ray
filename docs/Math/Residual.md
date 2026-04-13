@@ -6,6 +6,13 @@
 ### Method
 
 ![[Pasted image 20260121171536.png]]
+$$
+\begin{aligned}
+B\in R^{1\times n} \\
+A_m\in R^{n\times1} \\
+A_r\in R^{n\times n}
+\end{aligned}
+$$
 ![[Pasted image 20260121171754.png]]
 ![[Pasted image 20260121172201.png]]
 ![[Pasted image 20260121173033.png]]
