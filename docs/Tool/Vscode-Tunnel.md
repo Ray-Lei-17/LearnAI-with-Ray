@@ -7,6 +7,7 @@
 首先要下载code工具，我在服务器上使用中文官方提供的`vscode.github.net.cn`网址下载不下载，使用下面的英文版网址可以下载下来，或者可以在[下载网页](https://vscode.github.net.cn/#alt-downloads)下载命令行界面手动传上服务器
 ```
 curl -Lk 'https://code.visualstudio.com/sha/download?build=stable&os=cli-alpine-x64' --output vscode_cli.tar.gz
+
 ```
 进行解压
 ```
@@ -35,4 +36,11 @@ tar -xf vscode_cli.tar.gz
 ```
 ./code tunnel user logout
 ```
-用上面的命令将用户登出
+用上面的命令将用户登出，由于我的微软账号被莫名其妙删掉了，我发现光logout不太管用，用`unregister`才行
+```
+code tunnel unregister
+```
+然后发现可能是因为访问不到这个账号导致失败，所以我最后把下面两个文件夹内容给删掉了
+- `.vscode-server/cli/`
+- `.vscode-server/data/`
+重新全部来才成功

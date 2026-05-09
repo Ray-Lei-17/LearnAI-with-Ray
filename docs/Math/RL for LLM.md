@@ -45,11 +45,11 @@
 ![[Pasted image 20251013120932.png]]
 ![[Pasted image 20251013120947.png]]
 
-# 强化学习方法分类
+## 强化学习方法分类
 
 至此我们已经基本完成了所有基础要素概念的引入，接下来我们将对强化学习的方法进行了解。正如上一章GPT老师所说，由这些基础衍生出来了两种类型的强化学习方法：Value-based方法和Policy-based方法。现在目前LLM使用的方法基本是Policy-based的，但是进行基础的介绍有益于总体的理解，所以我们下面对于各个类型的方法都进行一下基本的介绍。
 
-## Value-based
+### Value-based
 
 ![[Pasted image 20251013161306.png]]
 正如前序所说，value-based方法不直接对于策略进行学习，而是对于这个动作价值函数进行学习。而智能体进行动作的时候，直接只用greedy的方式进行动作的选择。
@@ -78,11 +78,11 @@
 > **例子**
 > ![[Pasted image 20251013214943.png]]![[Pasted image 20251013215008.png]]![[Pasted image 20251013215037.png]]![[Pasted image 20251013215055.png]]
 
-## Policy-based
+### Policy-based
 
 介绍完了value-based，我们回到policy-based的内容上，与value-based不一样的是，policy-based的关注点在于策略的直接学习，最后直接得到一个用于执行的策略。
 
-### REINFORCE
+#### REINFORCE
 
 我们再回到强化学习的目标：
 ![[Pasted image 20251013211051.png]]
@@ -97,17 +97,17 @@ REINFORCE针对这个累计奖励的概率直接计算梯度进行更新
 > **例子**
 > ![[Pasted image 20251013232142.png]]![[Pasted image 20251013232218.png]]![[Pasted image 20251013232239.png]]![[Pasted image 20251013232257.png]]
 
-## Mixed
+### Mixed
 
 由于前述所说的REINFORCE的框架的缺点，所以将前面policy-based中的概念以价值网络critic的形式引入训练，来提供更平滑的信号。
 
-### Actor–Critic
+#### Actor–Critic
 
 ![[Pasted image 20251013225052.png]]
 ![[Pasted image 20251013225135.png]]
 在这个地方进行参数更新的时候，除了TD误差，在Actor网络更新的时候引入不同的优势函数进行该步动作与平均奖励的差异
 
-#### Advantage 优势函数
+##### Advantage 优势函数
 
 优势函数通过“哪个动作比平均好”来决定梯度方向。如果只用 $Q(s,a)$，那不同状态下的奖励尺度差别很大，梯度会非常 noisy。引入 V(s) 之后，你相当于在每个状态上都减去了一个 baseline，使得更新方向更稳定、更低方差。
 ![[Pasted image 20251013231447.png]]
@@ -116,19 +116,19 @@ REINFORCE针对这个累计奖励的概率直接计算梯度进行更新
 ![[Pasted image 20251013231552.png]]
 ![[Pasted image 20251013231609.png]]
 
-### PPO
+#### PPO
 
 针对`PPO`而言，其关键点在于更新`Actor`的时候使用的函数进行了改进。
 ![[Pasted image 20251013232026.png]]
 在PPO的公式中除了优势函数，又引入了一个新老策略的比值的概念，后面的clip就是对这个比值范围的限制，防止一次更新的步子过大。
 
-#### 重要性采样$r_t​(\theta)=\frac{\pi_{old​}(a_t,​s_t​)}{π_\pi​(a_t​,s_t​)}​$
-##### 原始解释
+##### 重要性采样$r_t​(\theta)=\frac{\pi_{old​}(a_t,​s_t​)}{π_\pi​(a_t​,s_t​)}​$
+###### 原始解释
 
 ![[Pasted image 20251013233329.png]]
 ![[Pasted image 20251013233348.png]]
 ![[Pasted image 20251013233420.png]]
-##### 解释更新
+###### 解释更新
 上面的解释当时给了我一种错觉，`PPO`是一种`off-policy`的策略，但实际上`PPO`是一个`on-policy`的方法，或者说近似`on-policy`，虽然会迭代采样比较新的方法，但是中间还是会有一些轮次是在最近采样的轨迹上更新的，并不代表完全最新的策略，所以还是存在策略重要性比值
 
 下面讲讲`off-policy`和`on-policy`的方法的区别
@@ -163,7 +163,7 @@ REINFORCE针对这个累计奖励的概率直接计算梯度进行更新
 ![[Pasted image 20251107110656.png]]
 ![[Pasted image 20251107110709.png]]
 
-#### 轮次的概念
+##### 轮次的概念
 
 由于PPO是近似`on-policy`，让我对轮次的概念产生了疑惑，GPT老师的表述中每一轮PPO会重新采样一次数据
 ![[Pasted image 20251107111911.png]]
@@ -207,11 +207,11 @@ REINFORCE针对这个累计奖励的概率直接计算梯度进行更新
 ![[Pasted image 20260114180531.png]]
 ![[Pasted image 20260114180559.png]]
 ![[Pasted image 20260114180625.png]]
-# RL for LLM
+## RL for LLM
 
 现在对于RL中的PPO算法有了一定的了解，那它又是如何用来训练大语言模型的呢？
 
-## PPO
+### PPO
 
 ![[Pasted image 20251014161206.png]]
 ![[Pasted image 20251014161313.png]]
@@ -312,7 +312,7 @@ for iteration in range(num_iterations):
 ![[Pasted image 20251014162114.png]]
 ![[Pasted image 20251014162132.png]]
 
-## DPO
+### DPO
 
 参考资料：[# 详细推导DPO算法](https://zhuanlan.zhihu.com/p/697757566)
 本站简单拆解：[[DPO]]
@@ -328,7 +328,7 @@ for iteration in range(num_iterations):
 ![[Pasted image 20251014163256.png]]
 
 
-## GRPO
+### GRPO
 
 简述：**组内成员之间的两两比较**得出的**相对胜率**作为奖励信号
 ![[Pasted image 20251014162818.png]]
@@ -347,7 +347,7 @@ for iteration in range(num_iterations):
 ![[Pasted image 20251014162433.png]]
 ![[Pasted image 20251014162450.png]]
 
-### 与DPO的联系与区别
+#### 与DPO的联系与区别
 
 ![[Pasted image 20251014162604.png]]
 ![[Pasted image 20251014162638.png]]
@@ -355,14 +355,14 @@ for iteration in range(num_iterations):
 ![[Pasted image 20251014162702.png]]
 ![[Pasted image 20251014162716.png]]
 
-### leave-one-out strategy
+#### leave-one-out strategy
 `leave-one-out strategy`是指在计算优势函数的时候，把自己这个样本摘出去，这样是为了减少计算时的方差，GPT老师解释如下
 
 ![[Pasted image 20251107112340.png]]
 ![[Pasted image 20251107112431.png]]
 ![[Pasted image 20251107112441.png]]
 
-## DAPO
+### DAPO
 简述：把全对或者全错的样本删掉，因为梯度为0，根本不需要做计算更新
 
 ![[Pasted image 20251107112617.png]]
@@ -387,17 +387,17 @@ tongyi的web sailor里面提供的方法，简述而言是吧DAPO里面去掉的
 这个就是DAPO去除梯度为0的样本的公式
 ![[Pasted image 20251107114802.png]]
 ![[Pasted image 20251107114852.png]]
-## GSPO
+### GSPO
 简述：把重要性采样给换成基于组的
 ![[Pasted image 20251104213526.png]]
-### 回答
+#### 回答
 ![[Pasted image 20251107115333.png]]
 ![[Pasted image 20251107115348.png]]
-### 序列级别
+#### 序列级别
 ![[Pasted image 20251107115943.png]]
 ![[Pasted image 20251107115959.png]]
 ![[Pasted image 20251107120024.png]]
 ![[Pasted image 20251107120036.png]]
 
-# 总结对比
+## 总结对比
 ![[Pasted image 20251107114942.png]]

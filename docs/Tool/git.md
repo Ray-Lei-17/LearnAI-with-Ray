@@ -56,3 +56,45 @@ git rm --cached $(git ls-files --deleted)
 ```
 git ls-files --deleted -z | xargs -0 git rm --cached
 ```
+
+## git worktree
+
+直接用分支名：
+
+```bash
+git worktree add ../新目录名 已有分支名
+```
+
+比如你有一个 `new-branch` 分支（且当前不在这个分支上）：
+
+```bash
+git worktree add ../新目录名 new-branch
+```
+
+就这一条命令，不需要 `-b`，因为分支已经存在，不用新建。但是注意如果是原创有该分支，而本地没有该分支，一样需要新建分支，使用带`-b`带命令。
+```bash
+git worktree add ../新目录名 -b new-branch origin/new-branch
+```
+
+---
+
+**`-b` 和不加 `-b` 的区别：**
+
+| 写法                                | 含义       |
+| --------------------------------- | -------- |
+| `git worktree add ../dir -b 新分支名` | 新建分支再检出  |
+| `git worktree add ../dir 已有分支名`   | 直接检出已有分支 |
+## git fetch
+
+`fetch` 只是把远程的信息下载到 `.git` 里，**不会动你工作目录的任何文件**。
+
+对比一下几个常见命令：
+
+|命令|会改变工作目录文件吗|
+|---|---|
+|`git fetch`|❌ 不会|
+|`git pull`|✅ 会（fetch + merge）|
+|`git checkout`|✅ 会|
+|`git merge`|✅ 会|
+
+`fetch` 是最安全的操作，随时可以跑。

@@ -1,4 +1,4 @@
-## Metrics summary
+## 生成中指标
 ### Perplexity (PPL)
 
 **PPL** 是 **Perplexity**（困惑度）的缩写，是评价语言模型（Language Model, LM）好坏最常用的指标之一。
@@ -229,6 +229,7 @@ $$\text{MCE} = \max(0.025, 0.20) = \mathbf{0.20}$$
     
 
 ---
+## 检索推荐相关
 
 ### Hit Rate (Hit@k)
 
@@ -284,7 +285,7 @@ $$\text{MRR} = \frac{1}{|U|} \sum_{i=1}^{|U|} \frac{1}{\text{rank}_i}$$
 
 ---
 
-### MAP (Mean Average Precision，平均准确率均值)
+### MAP (Mean Average Precision，平均准确率均值) (用于检索)
 
 **含义：** 考虑了所有正确答案的排名。它先计算每个用户的 Average Precision (AP)，再对所有用户取平均。
 
@@ -295,6 +296,18 @@ $$\text{AP} = \frac{\sum_{n=1}^k (\text{Precision@n} \times \text{rel}(n))}{\tex
 $$\text{MAP} = \frac{1}{|U|} \sum_{u \in U} \text{AP}_u$$
 
 其中 $\text{rel}(n)$ 为第 $n$ 个位置是否相关（1 或 0）。
+
+---
+
+### mAP (mean Average Precision) (用于目标检测)
+在目标检测（如 YOLO, Faster R-CNN）中，由于存在多个类别（如狗、猫、车），我们需要衡量模型对每个类别的表现。
+
+- **Average Precision (AP):** 针对**单一类别**，计算 Precision-Recall 曲线下的面积。在计算机视觉中，通常需要结合 **IoU**（交并比）阈值来判定是否检测成功。
+    
+- **mean:** 对**所有类别**（Class）的 AP 求平均
+  $$mAP = \frac{1}{N} \sum_{i=1}^{N} \text{AP}_i$$
+
+- **逻辑：** 衡量模型在**多类别检测**任务中的综合性能。
 
 ---
 
@@ -337,3 +350,106 @@ MRR v.s. NDCG
 - **如果你的任务中每个搜索/推荐只有一个标准答案：** 两者排序基本一致，选哪个都行（MRR 更常用，简单直观）。
     
 - **如果你的任务中存在多个正确答案（或者有相关分值）：** 它们的排序**经常会发生分歧**。此时 **NDCG** 被认为是更权威、更精细的指标，因为它奖励了模型召回更多正确项的能力。
+
+## 回答质量
+
+### ROUGE (基于Recall的要点候选评估)
+
+ROUGE 全称 Recall-Oriented Understudy for Gisting Evaluation，是一套衡量标准和软件包，用于评估自然语言处理中的自动摘要和机器翻译软件。这些指标将自动生成的摘要或翻译与参考文献或参考文献集（人工生成的）摘要或翻译进行比较。ROUGE 指标范围在 **0 到 1** 之间，分数越高表示自动生成的摘要与参考文献之间的相似度越高。
+
+#### 主要变体
+
+**ROUGE-N**：基于 N-gram 重叠率
+
+- ROUGE-1：单词级别的重叠
+- ROUGE-2：二元组（bigram）重叠，更关注流畅度
+
+**ROUGE-L**：基于最长公共子序列（LCS），能捕捉句子级别的结构相似性，不要求连续匹配
+
+**ROUGE-S**：基于跳跃二元组（skip-bigram），允许词之间存在间隔
+
+#### 核心计算方式
+
+以 ROUGE-N 为例，它同时计算召回率和精确率，再取 F1：
+
+- **召回率** = 参考文本中出现在生成文本里的 N-gram 数 / 参考文本总 N-gram 数
+- **精确率** = 生成文本中与参考文本重叠的 N-gram 数 / 生成文本总 N-gram 数
+- **F1** = 两者的调和平均
+
+#### 特点与局限
+
+**优点：** 计算简单、可解释性强、与人类判断有一定相关性
+
+**局限：**
+
+- 只关注词汇重叠，无法理解语义（"汽车"和"轿车"会被视为不同词）
+- 依赖参考答案的质量
+- 对于创意生成任务评估能力有限
+
+#### 具体例子
+
+![[Pasted image 20260509153741.png]]
+
+##### ROUGE-1
+
+![[Pasted image 20260509153812.png]]
+
+##### ROUGE-2
+
+![[Pasted image 20260509153833.png]]
+
+##### ROUGE-L
+
+![[Pasted image 20260509153904.png]]
+
+##### ROUGE-S
+
+![[Pasted image 20260509154211.png]]
+![[Pasted image 20260509154224.png]]
+![[Pasted image 20260509154302.png]]
+核心思路很简单：**从句子中任取两个词（保持顺序），就构成一个 skip-bigram**。一个 n 词的句子共有 C(n,2) = n(n-1)/2 对。
+
+在这个例子里，`sat` 是唯一不同的词，它参与了 5 对 skip-bigrams（`the·sat`、`cat·sat`、`sat·on`、`sat·the`、`sat·mat`），这 5 对全部未命中，其余 10 对都命中，所以 ROUGE-S F1 = **0.667**。
+
+---
+
+**一个实用变体：ROUGE-SU**
+
+ROUGE-S 有个小缺陷：如果两个句子没有任何公共 skip-bigram，得分是 0，但它们可能还是有不少公共单词的。所以实践中常用 **ROUGE-SU**，即在 skip-bigram 的基础上，额外把所有 unigram（单词）也加进去一起算，使得分更稳健。
+
+##### 对比
+
+![[Pasted image 20260509154448.png]]
+
+**ROUGE-1** 统计单词级匹配。生成文本 6 个词中有 5 个出现在参考文本里（`the cat is on the mat`，`is` 未命中），召回率和精确率都是 5/6 ≈ **0.833**。
+
+**ROUGE-2** 统计相邻词对（bigram）的匹配。生成文本的 5 个 bigram 里，只有 `the cat`、`on the`、`the mat` 命中，因为 `cat is` 和 `is on` 跟参考文本里的 `cat sat`、`sat on` 不一样。最终 F1 = **0.600**，明显低于 ROUGE-1，说明模型在语序/流畅度上有差异。
+
+**ROUGE-L** 找最长公共子序列（LCS），词不需要连续，只需保持相对顺序。两句共享 `the cat on the mat`（长度 5），跳过了各自不同的 `sat` 和 `is`，F1 同样是 **0.833**。
+
+一个规律：**ROUGE-1 ≥ ROUGE-L ≥ ROUGE-2**。ROUGE-2 对词序最严格，所以通常最低；ROUGE-L 允许跳跃匹配，往往比 ROUGE-2 宽容。在实践中，文本摘要评测常同时报告这三个值。
+
+ROUGE-S 介于 ROUGE-1 和 ROUGE-2 之间：比 ROUGE-2 宽松（不要求连续），比 ROUGE-1 严格（需要词序关系）。它能捕捉"词出现了，且顺序大体正确"的信息。
+
+### BLEU
+
+BLEU（Bilingual Evaluation Understudy）是机器翻译领域最经典的自动评估指标，由 IBM 在 2002 年提出。它的核心思路和 ROUGE 相反——ROUGE 侧重**召回率**（参考文本的内容有多少被覆盖），而 BLEU 侧重**精确率**（生成文本中有多少是"对的"）。
+
+![[Pasted image 20260509154827.png]]
+![[Pasted image 20260509154852.png]]
+![[Pasted image 20260509154910.png]]
+BLEU 的计算分四步：
+
+**第一步：修正精确率（Clipped Precision）。** 先统计生成文本里每个 n-gram 在参考文本中出现了多少次，但命中次数不能超过它在参考文本中出现的上限。这个"截断"是关键——它防止模型靠重复高频词来刷高分（比如一直输出"the the the"）。
+
+**第二步：计算各阶 pₙ。** BLEU-4 同时计算 1-gram 到 4-gram 的修正精确率，阶数越高越难匹配，反映了对流畅度和局部语序的要求。
+
+**第三步：简洁惩罚（BP）。** 如果生成文本比参考文本短，会被乘以一个小于 1 的惩罚系数，防止模型通过输出极短文本来获得高精确率。
+
+**第四步：几何平均。** 对四个阶的 log 精确率做加权平均再取 exp，这样只要有一阶为 0，整体得分就会拉到极低（实践中需要加平滑处理）。
+
+---
+
+**一个重要局限：** BLEU 同 ROUGE 一样，只看词面匹配，不懂语义。"The cat is on the mat" 和 "A feline rests upon the rug" 意思相同，BLEU 得分却接近 0。这也是为什么现在越来越多任务开始用 BERTScore、COMET 等基于语义嵌入的指标来补充。
+
+
