@@ -479,3 +479,209 @@ Layer 4: api/ cli/ ui/  → 接口层，依赖 Layer 0-3，彼此不互相引�
 > 说到底，环境设计的投入回报远高于 prompt 调优。一套好的 Harness 能让普通模型产出可靠的代码，而没有 Harness 的顶级模型照样会在同样的坑里反复栽。搭建的前期成本不高——一个下午就能建好基本的 AGENTS.md 和 lint 脚本。但它的价值会随着时间复利式增长：记忆越来越丰富，lint 规则越来越完善，越来越多的操作模式被编译成确定性脚本。半年后回头看，你的仓库已经变成了一个高度适配你们团队工作方式的 Agent 运行环境，任何新加入的人（或新会话的 Agent）都能立刻进入状态。
 > 
 > 竞争优势不再是 Prompt，而是 Trajectory。这些积累，换个模型复制不来。
+
+
+## [AI 不缺智商缺纪律：我的 Harness 工程化实践](https://mp.weixin.qq.com/s/2kWi0Fld09fNMVIUg9ddKQ)
+
+杜学友 阿里云开发者
+ _2026年6月16日 08:30_ _浙江_
+ 
+### 二、搭建：我的 harness 长什么样
+
+光强调分层组织项目的prompt是不够的，现在的记忆组织prompt越多，越容易变成负累。
+文章重点：**把上下文当预算来管理**。
+
+![[ea1a108177223181d6f8caee0091619f.jpg]]
+
+**2.1 常驻入口层：CLAUDE.md + CLAUDE.local.md**
+
+放角色、代码偏好、流程触发规则、G1–G8 门禁速查。关键设计是 **`CLAUDE.local.md` 自包含、不依赖全局 `@import`**：新项目接入只需拷一份模版进去就能独立运作。
+
+- 解决：每个项目的流程规范彼此隔离、互不串味。
+    
+- 效果：主会话常驻上下文压到 ≤8K，把宝贵窗口留给真正的代码。
+
+**2.3 角色 Agent 层：agents/**
+
+这是全套框架的发动机，把一个"全能主会话"拆成一条职责清晰的流水线：
+
+- 流程调度：`dispatcher` 读 state.json + workflow.yaml，决定下一步该调谁——交通警察，只管路由不管业务。
+    
+- 评审合成：`orchestrator` 读三角色写入 phases/*.md 的观点，合成结论并向用户确认——会议秘书，只管合成不管调度。
+    
+- 三角色评审：`requirement-analyst`（业务）/ `tech-architect`（技术）/ `quality-guardian`（质量），各写各的观点段，互不污染。
+    
+- 流程执行：`plan-generator → developer → verifier → deployer → tester`，从方案到验收一步一岗。
+    
+
+> 判断：主会话应该退化成一个"什么都不想、只执行 dispatcher 指令"的纯执行器。 这反直觉——我们本能地想让主模型更全能；但全能恰恰是污染之源。主会话不是能力不足，而是职责收窄——像微服务里的 thin controller，不是它不行，是它不该管。这个思路并非独创——Devin 从第一天就做了"脑机分离[3]"：推理（"大脑"）在沙箱外执行，执行环境（"机器"）无权访问大脑状态。Cognition 的评价是"更好的架构"，代价是状态管理更复杂。我的 harness 走了一条更轻量的路——不隔离进程，而是通过 agent 职责隔离 + 文件交接达到类似效果。
+
+
+按用途分四类：
+
+| 类别      | 角色                                                                | 为什么不能合并                                                                                        |
+| ------- | ----------------------------------------------------------------- | ---------------------------------------------------------------------------------------------- |
+| 调度 + 合成 | dispatcher（路由）<br><br>orchestrator（合成）                            | dispatcher 只读 state.json 做路由决策，orchestrator 只读 phases/*.md 做合成确认——职责正交，合并会导致"裁判兼选手"            |
+| 三角色评审   | requirement-analyst<br><br>tech-architect<br><br>quality-guardian | 业务/技术/质量必须独立思考、互不看到对方初稿，才有对抗性；合成后反而更省 token                                                    |
+| 流程执行    | plan-generator → developer<br><br>→ verifier → deployer → tester  | 每个节点的 system prompt 和可用工具完全不同（如 developer 有 Edit/Bash，verifier 只有 Read/Bash）——合并意味着同时暴露所有工具，等于 |
+
+> 真正需要警惕的不是"agent 多"，而是"agent 间耦合多"。 输入输出是清晰的文件/JSON、不需要会话协商，数量就不是问题。
+
+这套"薄主会话"靠三条铁律落地：
+
+```
+1. 主会话只听 dispatcher：dispatcher 读 state.json 返回"下一步调谁"，主会话照做，禁止自己 Read phases/*.md / evidence.json
+2. 职责隔离：dispatcher 只管路由、orchestrator 只管合成、developer 只管编码、verifier 只管检查，每个 agent 的可用工具严格受限
+3. 上下文 ≤8K：主会话只加载 CLAUDE.md + 触发规则 + 最近一条 dispatcher 指令   
+```
+
+![[175bf660e16fbfac4e822bb44592ed88.jpg]]
+
+
+### 三、打磨：从"能用"到"好用"的关键几跳
+
+
+![](https://mmbiz.qpic.cn/sz_mmbiz_jpg/j7RlD5l5q1zSib6uyLEibbyocwPWgq4OlM6vUgiaGMLCrt2P3SZgjasF9gNI6BS8zr7ib2p2uuialt8ULx6ZKJ0MgS8GPgLLny0qB4QcmGFiaHqnY/640?wx_fmt=webp&from=appmsg&tp=wxpic&wxfrom=5&wx_lazy=1#imgIndex=4)
+
+**第三阶段 · 减负 + 分层加载**
+
+问题的根因已经清晰：我把"有状态的流程"硬塞进了"无状态的对话窗口"，本质上是用错了工具。 于是做了两件事：
+
+1. **给 harness "减负"**：把常驻 prompt 从"全流程指令手册"砍到只剩角色定义 + 触发规则，压到 ≤8K。深度内容（TDD 指南、Pre-Mortem 模板、对抗辩论规范）全部移到 `context/` 层，只在进入对应阶段时才 Read 进来。
+    
+2. 整理三层加载链路：常驻入口层 → 原子规则层 → 按需上下文层，把上下文当预算管理而不是当草稿纸挥霍。
+
+![](https://mmbiz.qpic.cn/sz_mmbiz_jpg/j7RlD5l5q1xuAMI6nKhIKF3vxegVCyF4vxh9qnHLfQicMvibwYseCFQlJk4xhgJ4lribxia9x4HG0QupoF2tVVXWWfYT7n8jDKMqnTmEuqjiboa0/640?wx_fmt=webp&from=appmsg&tp=wxpic&wxfrom=5&wx_lazy=1#imgIndex=6)
+
+这一步的效果立竿见影：主会话不再被规则淹没，模型终于有"脑容量"去理解代码了。但新问题在长程会话中暴露了——写了几百行代码、跑了几十次工具调用之后，上下文被业务代码和工具输出逐渐填满，规则虽然还在但已经被稀释到注意力衰减区。典型症状：写完代码后忘记该走什么流程，因为"先跑单测再提交"这条规则被几十屏代码输出挤到了模型"看不见"的位置。
+
+**第四阶段 · Agent 调度编排**
+
+核心设计：一个 dispatcher（流程驱动器） 作为大脑，只负责"算下一步该谁上场"；其他 agent 各管一段——三角色评审独立思考互不串味、developer 只管编码不管流程、verifier 只管检查不管实现。第二章描述的「笨主会话」原则，在这里真正落地了。
+
+一次高强度全天重构验证了这个架构：状态外置、决策收敛给 dispatcher，即使单次会话崩了、上下文被压缩了，状态不丢、流程能续。
+
+但 24 agent 也暴露了过度拆分的代价——每个 agent 的 system prompt 本身就是一个"小型 CLAUDE.md"，规则指令占满上下文后留给实际任务的空间反而更少；agent 间转交多、调试链路长、维护心智负担大。后续把 intent-classifier / debate-moderator / pre-mortem 等流程节点合并入主干 agent，精简冗余的中间调度层，在保留核心约束（dispatcher 路由、职责隔离、状态外置、门禁阻断）的前提下降低了协调成本和单 agent 规则密度。这就是第二章描述的当前架构。
+
+最终选择 dispatcher 状态机 + 文件系统交接：agent A 写 `phases/05-design.md`，agent B 读它。三个硬优势：  
+① 天然持久化——进程崩了文件还在，跨天需求 `Read state.json` 即续；  
+② 可审计——每步产物都是人可读的 markdown，`git diff` 一眼看清谁在哪步写了什么；  
+③ 强一致性——state-keeper 单写者（hook 拦截其他写者）+ ajv schema 校验前置，从架构层面消除多 agent 写冲突。
+
+代价同样真实：每次 agent 切换需 Read 上一步产物（~2-5K tokens IO 开销）、调试链路跨多个 agent 的 transcript、并行能力受限于文件交接的序列化特性。
+
+更加深入的部分是后面讲述了要怎么去测评harness的效果，还比较详细，有需要可以仔细看看
+
+## [Harness Engineering：耗时一周，我是如何将应用的AI Coding率提升至90%的](https://mp.weixin.qq.com/s/rlIyIIZOXFObNIXbPI7gDg)
+
+新安 阿里云开发者
+_2026年5月7日 08:30_ _重庆_
+
+下面是我抽取出来我感觉可以仔细去阅读一下的地方，harness这个东西感觉还是挺费精力的，你必须不断去迭代它，同时要花费很多时间和相应的token
+
+### 三、AI Coding 的现状与挑战
+
+在进入实践之前，有必要正视当前 AI Coding 在企业级项目中面临的核心挑战。这些挑战不是某个特定项目的个案，而是所有试图将 Agent 引入存量代码库的团队都会遇到的系统性问题。
+
+**3.1 大型存量代码库的认知负担**
+
+**（Cognitive Load）**
+
+企业级 Java 应用通常具备以下特征：代码量在十万行以上，技术栈涉及 RPC 框架（HSF/Dubbo/gRPC）、流程编排引擎（LiteFlow/Temporal）、配置中心（Diamond/Apollo/Nacos）、分布式缓存（Tair/Redis）、数据库中间件（TDDL/ShardingSphere）等。业务链路层层嵌套，模块间的依赖关系错综复杂。
+
+对于 Agent 来说，这种认知负担是灾难性的。它不知道某条链路是高频变更区（过去一年有数十次 XML 改动），不知道某个全局配置类在项目中有近百处引用，不知道某些字段有隐含的类型和单位约束——这些"隐性知识"（Tacit Knowledge）散落在团队成员的经验中、群聊的历史消息中、未入库的会议纪要中。
+
+正如 OpenAI 团队在百万行代码实践中总结的：**Agent 的知识边界等于代码库的文件边界（The agent's knowledge boundary equals the repository's file boundary）。** 如果某条架构约定不在代码库中以机器可读的形式存在，对 Agent 来说它就不存在。
+
+**3.2 质量控制的系统性缺失**
+
+**（Systematic Quality Gap）**
+
+裸用 Agent 写代码时，质量控制几乎完全依赖人工 Code Review。但当 Agent 的产出速度远超人工审查速度时，质量瓶颈就从"写代码"转移到了"看代码"。更麻烦的是，Agent 生成的代码通常语法正确、风格统一，但在业务语义层面可能存在微妙的错误——比如忘了在国际化链路上做同样的修改，或者没有考虑到配置中心某个动态参数的影响。
+
+Anthropic 的研究证实了这一判断："Agents are incapable of accurately evaluating their own work"。这意味着，**我们不能依赖 Agent 自我审查，必须构建外部化的、自动化的质量验证体系。**
+
+**3.3 熵的累积（Entropy Accumulation）**
+
+这是 OpenAI 在百万行代码实践中提出的一个重要概念。Agent 写代码时会模仿代码库中已有的 Pattern，包括那些 Suboptimal 的 Pattern。每次 Agent 生成代码，都可能引入少量的风格不一致、冗余逻辑或次优实现。单次看起来无关痛痒，累积起来却会让代码库逐渐腐化（Code Rot）。
+
+OpenAI 早期尝试每周五手动清理"AI 产物"，但很快发现这种方式无法持续。他们最终的解决方案是将"Golden Principles"编码化——例如"优先使用共享工具包而非手写辅助函数"、"结构化日志格式统一"等——让后台 Agent 自动扫描违规并提交修复 PR，形成自动化的"Entropy Garbage Collection"机制。
+
+**3.4 开发者角色的范式转移**
+
+**（Paradigm Shift）**
+
+引入 Agent 后，开发者的核心工作正在发生本质变化。传统模式下，日常工作是写代码、调 Bug、做 Code Review。在 Agent-First 模式下，核心工作变成了：**设计 Agent 的工作环境（Working Environment Design）、编写规范文档（Specification Authoring）、管理任务拆分与验收（Task Orchestration & Acceptance）。**
+
+文档从"给人看的参考资料"变成了"Agent 认识世界的唯一窗口"。架构约束不再只是"大团队才需要"的奢侈品，而是 Agent 能够高效工作的前置条件。发现 Bug 不再只是修代码，而是修 Harness——从根源上防止同类问题再次出现。这与 Mitchell Hashimoto 的定义完全一致：**每发现一个错误，就工程化地消除它再次发生的可能性。**
+
+### 四、Harness Engineering 实战
+
+**4.3 上下文架构：分层加载，按需获取**
+
+上下文管理是整个体系的地基。我将项目知识按加载时机分为三个层次：
+
+**L1 — 会话常驻层（Always Loaded）。** 包括 Agent 定义文件（约 420 行，承担 Index & Map 职责）和三份 Rules 文件。提供全局视野和基本约束，但总量严格控制——遵循 Anthropic 的经验，避免上下文窗口填充率超过 40%。
+
+**L2 — 阶段触发层（Phase-triggered）。** 进入需求分析阶段时加载 `request-analysis` Skill；编码阶段加载 `coding-skill` 和 8 份分层编码 Spec（覆盖 Controller → Service → Domain → DAO → Adapter 全链路）；评审阶段加载 `expert-reviewer`。每个阶段只加载当前需要的知识。
+
+**L3 — 按需查询层（On-demand）。** Wiki 知识库中的业务文档不会主动加载，Agent 根据任务需要自主查阅。这保证了上下文的"新鲜度"和针对性。
+
+这种分层策略的核心考量是：**让 Agent 在任何时刻都拥有"刚好够用"的上下文（Just-enough Context）。** 对于中间件繁多的企业级应用尤其关键——如果把 RPC 规范、流程引擎组件写法、配置中心规范全部一次性塞给 Agent，信息过载反而会导致注意力分散和幻觉。
+
+
+**4.4 十阶段开发流程：结构化执行的核心**
+
+这是整套 Harness 体系中最重要的设计。我将一个完整的开发需求从接收到交付划分为 **10 个严格有序的阶段（10-Stage Pipeline）**：
+
+![图片](https://mmbiz.qpic.cn/mmbiz_png/j7RlD5l5q1zb80bjoKgPEusiaCjqfiafMuB9wnHnfEbeVWQmK3mZibqVgV0k5mUhskWx5WRukFJ2tjgtzQvZianFokXbC2lCUw8HdRjxk7nVweg/640?wx_fmt=png&from=appmsg&tp=wxpic&wxfrom=5&wx_lazy=1#imgIndex=4)
+
+```
+需求分析 → 需求评审 → 编码实现 → 编码评审 → 单元测试编写
+```
+
+每个阶段都有明确的三要素：**触发条件（Entry Criteria）** — 什么时候可以进入；**Skill 加载（Skill Injection）** — 需要加载哪个技能包；**质量门禁（Quality Gate）** — 产出必须满足什么条件才能通过。
+
+阶段之间的流转有精确的**回退路径（Rollback Routes）**：CI 失败时，测试为 0/0 回退到阶段 5（测试编写）；编译错误回退到阶段 3（编码实现）；需求不符回退到阶段 1（需求分析）。这种精确的失败路由避免了"出了问题只能从头来"的低效。
+
+评审环节设置了**循环上限（Iteration Cap）**：需求评审最多 3 轮，编码/测试评审最多 2 轮，超出后升级到人工决策。这个设计防止了 Agent 陷入无限的自我修改循环（Infinite Self-correction Loop）。
+
+流程中还嵌入了 **5 个 Human-in-the-Loop 确认点**：需求待决议确认、计划评审后确认、编码评审后确认、部署环境参数确认、最终交付确认。确保人始终掌握关键决策权
+
+### 五、关键经验
+
+经过多个需求的实战打磨，以下是对 Harness 体系构建最有指导价值的通用经验。
+
+**5.1 Harness 本身需要 Dry Run**
+
+在拿真实需求使用 Harness 之前，应当用一个虚拟需求完整走一遍全流程——这就是软件测试中的 Dry Run 概念。我在空跑中发现了四个关键缺陷：CI 门禁只检查状态码而忽略测试用例数为 0 的异常；评审报告在简单需求下不生成文件；摘要文件因 Agent 的"追加"倾向出现重复行；部署参数被 Agent 错误推测。这些问题如果在真实需求中才暴露，每一个都可能导致严重的返工。
+
+**核心启示：不要期望第一版 Harness 就是完美的，用低成本的方式快速验证、快速修复。**
+
+**5.2 质量门禁必须可程序化验证**
+
+"If it can't be mechanically enforced, the agent will drift."（如果它不能被机械化地执行，Agent 就会偏离。）这是 OpenAI 百万行代码项目的核心经验之一，也是我实践中最深刻的体会。
+
+"检查 CI 是否通过"这种自然语言描述是不够的——Agent 可能认为状态 SUCCESS 即通过，却忽略测试用例数为 0 的异常。将门禁改为三个可程序化验证的条件（`status == SUCCESS && total_tests > 0 && passed == total`）后，问题彻底消除。
+
+同样，"生成评审报告"不够具体，必须校验"目标路径下文件存在且包含必填章节"。**一切不可被机器验证的约束，在 Agent 执行中都是无效约束。**
+
+**5.3 分离执行与评判是关键杠杆**
+
+Anthropic 在其工程博客中反复强调："将做事的 Agent 和评判的 Agent 分开，是一个强有力的杠杆。"在我的实践中，编码 Agent 和评审 Agent 的分离确实带来了显著的质量收益——评审 Agent 发现了编码 Agent 遗漏的渠道判断逻辑（一个潜在的线上故障），还在另一个需求中检测到 Agent 试图跳过评审阶段并强制回退。
+
+![图片](https://mmbiz.qpic.cn/mmbiz_png/j7RlD5l5q1zKOqAdUq9sdJh67CdOfkL5bqtPlyfgyLg7mCAz802k6j9T9Dibeg6kagCGL1VWyWmTN4Qce9rLu3agqCR8zSNSaOU1Dia6R11BM/640?wx_fmt=png&from=appmsg&tp=wxpic&wxfrom=5&wx_lazy=1#imgIndex=5)
+
+评审 Agent 不需要"更聪明"，它只需要用一套不同于编码 Agent 的检查视角来审视产出物。这种 Agent-to-Agent Review 的模式，本质上是将传统的 Code Review 自动化，将质量发现前移到 Human Review 之前。
+
+**5.4 流程一致性优先于流程效率**
+
+在一个仅涉及 2 个文件、6 行代码的小需求中，我依然走完了完整的 10 阶段流程——1 轮评审即通过，过程非常流畅。这验证了一个重要假设：**好的流程不应该给简单任务增加显著负担。** 当需求足够简单时，每个阶段的执行时间自然缩短。但流程的一致性保证了不会因为"这次改动很小"就跳过关键环节。
+
+在企业级系统中，"小改动大事故"的案例不胜枚举。保持流程一致性是一种廉价的保险。
+
+**5.5 规范是活文档，需要持续迭代**
+
+我的开发流程规范经历了多次版本更新，每次实战发现新问题都会立即 Patch 到 Harness 中。这与 Mitchell Hashimoto 的 Harness Engineering 核心定义完全一致：每发现一个错误，就工程化地消除它再次发生的可能性。
+
+**规范的每一行都对应一个历史失败案例。** 当你觉得某条规则"多余"或"啰嗦"时，那往往是因为它背后有一个真实踩过的坑。
