@@ -169,8 +169,7 @@ Snip Compact → Micro Compact → Context Collapse → Auto Compact     零A
 > **核心理念**：用代码和工具强制执行规则，而非依赖 prompt 的"软约束"。依赖模型"自律性"是不可靠的。
 > 
 > 该项目在这个支柱上的投入极重——整个权限系统就是一个五层纵深防御体系：
-> 
-> ![五层权限安全模型](https://mmbiz.qpic.cn/sz_mmbiz_png/KVER9adz904qMrE1MtAR0yRux1biaUvBMgGRFAjXoycIAib2z2LeTFLmdO4OXyKdUNFMdrDQj4fiahSic4eE8zDbbXMUyicibBu7piap1Fm1gpNEHM/640?wx_fmt=png&from=appmsg&tp=wxpic&wxfrom=5&wx_lazy=1#imgIndex=9)
+> ![[aa98ce82c33fae663ee9698fb077dec0.png]]
 > 五层权限安全模型
 > 
 > 层层递进：**Deny Rules（不可见）→ Tool-level Permissions（自检）→ Generic Rules（规则匹配）→ Permission Mode（模式判断）→ Auto Classifier（分类器兜底）**。
@@ -258,7 +257,7 @@ Snip Compact → Micro Compact → Context Collapse → Auto Compact     零A
 > 4. **模型降级容错**：当主模型过载时，自动切换到 fallback 模型，strip thinking 签名块防止 400 错误
     
 
-![五层能力扩展体系](https://mmbiz.qpic.cn/sz_mmbiz_png/KVER9adz905fb8r0VTDM5p2WHbynlr8WkQ31CpczBk7aCCCkuZdWzmWNFFoyoWYe1PHrGiasWo4WKMB83XiaUPzjnYuwEMpxSORqkBNM1xMOM/640?wx_fmt=png&from=appmsg&tp=wxpic&wxfrom=5&wx_lazy=1#imgIndex=10)
+![[42c796d0811d59b0ecdc27fcd5dfdaca.png]]
 五层能力扩展体系
 
 ### Takeaway
@@ -540,8 +539,9 @@ Layer 4: api/ cli/ ui/  → 接口层，依赖 Layer 0-3，彼此不互相引�
 
 ### 三、打磨：从"能用"到"好用"的关键几跳
 
+![[87895d06e661921799db0faa51c33ac5.jpg]]
 
-![](https://mmbiz.qpic.cn/sz_mmbiz_jpg/j7RlD5l5q1zSib6uyLEibbyocwPWgq4OlM6vUgiaGMLCrt2P3SZgjasF9gNI6BS8zr7ib2p2uuialt8ULx6ZKJ0MgS8GPgLLny0qB4QcmGFiaHqnY/640?wx_fmt=webp&from=appmsg&tp=wxpic&wxfrom=5&wx_lazy=1#imgIndex=4)
+核心教训：prompt 约束是说服，不是强制。模型"理解"了规则不等于"遵守"了规则——你无法用更多的字来对抗概率性的遗忘。
 
 **第三阶段 · 减负 + 分层加载**
 
@@ -551,7 +551,7 @@ Layer 4: api/ cli/ ui/  → 接口层，依赖 Layer 0-3，彼此不互相引�
     
 2. 整理三层加载链路：常驻入口层 → 原子规则层 → 按需上下文层，把上下文当预算管理而不是当草稿纸挥霍。
 
-![](https://mmbiz.qpic.cn/sz_mmbiz_jpg/j7RlD5l5q1xuAMI6nKhIKF3vxegVCyF4vxh9qnHLfQicMvibwYseCFQlJk4xhgJ4lribxia9x4HG0QupoF2tVVXWWfYT7n8jDKMqnTmEuqjiboa0/640?wx_fmt=webp&from=appmsg&tp=wxpic&wxfrom=5&wx_lazy=1#imgIndex=6)
+![[c0bd3aa8dd2fe982bf9786593d65968f.jpg]]
 
 这一步的效果立竿见影：主会话不再被规则淹没，模型终于有"脑容量"去理解代码了。但新问题在长程会话中暴露了——写了几百行代码、跑了几十次工具调用之后，上下文被业务代码和工具输出逐渐填满，规则虽然还在但已经被稀释到注意力衰减区。典型症状：写完代码后忘记该走什么流程，因为"先跑单测再提交"这条规则被几十屏代码输出挤到了模型"看不见"的位置。
 
@@ -634,7 +634,7 @@ OpenAI 早期尝试每周五手动清理"AI 产物"，但很快发现这种方�
 
 这是整套 Harness 体系中最重要的设计。我将一个完整的开发需求从接收到交付划分为 **10 个严格有序的阶段（10-Stage Pipeline）**：
 
-![图片](https://mmbiz.qpic.cn/mmbiz_png/j7RlD5l5q1zb80bjoKgPEusiaCjqfiafMuB9wnHnfEbeVWQmK3mZibqVgV0k5mUhskWx5WRukFJ2tjgtzQvZianFokXbC2lCUw8HdRjxk7nVweg/640?wx_fmt=png&from=appmsg&tp=wxpic&wxfrom=5&wx_lazy=1#imgIndex=4)
+![[569e12a9d3f9dd89db5031d7397122c1.png]]
 
 ```
 需求分析 → 需求评审 → 编码实现 → 编码评审 → 单元测试编写
@@ -670,7 +670,8 @@ OpenAI 早期尝试每周五手动清理"AI 产物"，但很快发现这种方�
 
 Anthropic 在其工程博客中反复强调："将做事的 Agent 和评判的 Agent 分开，是一个强有力的杠杆。"在我的实践中，编码 Agent 和评审 Agent 的分离确实带来了显著的质量收益——评审 Agent 发现了编码 Agent 遗漏的渠道判断逻辑（一个潜在的线上故障），还在另一个需求中检测到 Agent 试图跳过评审阶段并强制回退。
 
-![图片](https://mmbiz.qpic.cn/mmbiz_png/j7RlD5l5q1zKOqAdUq9sdJh67CdOfkL5bqtPlyfgyLg7mCAz802k6j9T9Dibeg6kagCGL1VWyWmTN4Qce9rLu3agqCR8zSNSaOU1Dia6R11BM/640?wx_fmt=png&from=appmsg&tp=wxpic&wxfrom=5&wx_lazy=1#imgIndex=5)
+
+![[38e0b699e3af75efe360e8a29f4e4e7e.png | 300]]
 
 评审 Agent 不需要"更聪明"，它只需要用一套不同于编码 Agent 的检查视角来审视产出物。这种 Agent-to-Agent Review 的模式，本质上是将传统的 Code Review 自动化，将质量发现前移到 Human Review 之前。
 
